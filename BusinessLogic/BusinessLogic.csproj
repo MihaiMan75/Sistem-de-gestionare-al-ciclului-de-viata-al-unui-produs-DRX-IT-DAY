@@ -41,11 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthUtils\IPasswordHasher.cs" />
+    <Compile Include="AuthUtils\PasswordHasher.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AuthUtils\" />
     <Folder Include="Dtos\" />
     <Folder Include="Enums\" />
     <Folder Include="Interfaces\" />
