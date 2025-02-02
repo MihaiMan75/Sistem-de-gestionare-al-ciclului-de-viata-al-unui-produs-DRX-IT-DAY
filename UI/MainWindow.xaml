@@ -7,21 +7,46 @@
         mc:Ignorable="d"
         Title="Sistem De Gestionare a Ciclului de Viata a unui Produs" Height="450" Width="800 "
         xmlns:UserControls="clr-namespace:UI.UserControls"
+        xmlns:Views="clr-namespace:UI.Views"
+        xmlns:ViewModels="clr-namespace:UI.ViewModels"
         SizeChanged="Window_SizeChanged"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        WindowStyle="None">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen">
     <Window.Background>
-        <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
+        <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" Opacity="0">
             <GradientStop Color="#00b894" Offset="0" />
             <GradientStop Color="#00b894" Offset="1" />
         </LinearGradientBrush>
     </Window.Background>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type ViewModels:LoginViewModel}">
+            <Views:LoginPage/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type ViewModels:TestPageViewModel}">
+            <Views:TestPage/>
+        </DataTemplate>
+    </Window.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.06*"/>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
+        <Border CornerRadius="15,15,0,0" Grid.Row="0" Grid.RowSpan="2">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.5" />
+            </Border.Effect>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" Opacity="0.8">
+                    <GradientStop Color="#00b894" Offset="0" />
+                    <GradientStop Color="#00b894" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
         <!--Window Buttons-->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -30,10 +55,10 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical">
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <Button x:Name="btnMinimize"  Click="btnMinimize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="-" Padding="10" FontSize="15" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
-                <Button x:Name="btnMaximize"  Click="btnMaximize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="⏹️" Padding="10" FontSize="15" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
-                <Button x:Name="btnClose"  Click="btnClose_Click" Width="20" Height="20" Margin="10,0,5,0"  Background="Transparent" Content="❌" Foreground="WhiteSmoke" Padding="10" FontSize="15" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,3,10,0">
+                <Button x:Name="btnMinimize"  Click="btnMinimize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="-" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
+                <Button x:Name="btnMaximize"  Click="btnMaximize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="⏹️" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
+                <Button x:Name="btnClose"  Click="btnClose_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Content="❌" Foreground="WhiteSmoke" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
             </StackPanel>
           
         </Grid>
@@ -71,7 +96,7 @@
                 <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
                 <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
             </StackPanel>
-            <Frame x:Name="MainFrame" Grid.Column="1" Padding="5"/>
+            <Frame  x:Name="MainContent" Content="{Binding Navigation.CurrentViewModel}" Grid.Column="1" Padding="5"/>
         </Grid>
     </Grid>
 </Window>

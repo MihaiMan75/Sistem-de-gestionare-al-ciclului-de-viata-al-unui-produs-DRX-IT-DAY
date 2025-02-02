@@ -19,11 +19,11 @@
         <Border Grid.Row="0" Grid.RowSpan="5" >
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#00CCDD" Offset="0.0" />
-                    <GradientStop Color="#E1FFBB" Offset="1.0" />
+                    <GradientStop Color="#636e72" Offset="0.0" />
+                    <GradientStop Color="#2d3436" Offset="1.0" />
                 </LinearGradientBrush>
             </Border.Background>
-            <Border.Opacity >0.3</Border.Opacity>
+            <Border.Opacity >0.8</Border.Opacity>
             <Border.CornerRadius>
                 <CornerRadius TopLeft="25" TopRight="25" BottomLeft="25" BottomRight="25"/>
             </Border.CornerRadius>
@@ -33,7 +33,7 @@
             <TextBlock Text="User Login" FontSize="30" Foreground="WhiteSmoke" FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" />
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="20" Orientation="Horizontal" HorizontalAlignment="Center">
-            <UserControls:CostumTextBoxWithEraseButton x:Name="txtUsername" PlaceHodler="Usernane" Width="300" Height="30"/>
+            <UserControls:CostumTextBoxWithEraseButton x:Name="txtUsername" PlaceHodler="Username" Width="300" Height="30"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="20" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- <PasswordBox x:Name="txtPassword"  Password="Password" FontSize="20" Width="300" Height="30" Margin="0,0,0,0" />-->

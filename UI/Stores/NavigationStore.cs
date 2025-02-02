@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace UI.Stores
+{
+
+    /// <summary>
+    /// Represents a class that stores the current view model data.
+    /// </summary>
+    public class NavigationStore : ObservableObject
+    {
+        private object _currentViewModel;
+
+        [ObservableProperty]
+        public object CurrentViewModel
+        {
+            get { return _currentViewModel; }
+            set { _currentViewModel = value; }
+        }
+    }
+}
