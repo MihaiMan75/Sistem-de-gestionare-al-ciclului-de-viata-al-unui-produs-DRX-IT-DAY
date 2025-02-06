@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogic", "BusinessLogic\BusinessLogic.csproj", "{50C90A9D-D6E2-4626-B135-B6372171E4C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{26D6FD58-BDC9-40BF-A6E1-862AFBC10289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPF-UI", "WPF-UI\WPF-UI.csproj", "{04B20021-799B-4E5E-91DE-330D0DD710E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{50C90A9D-D6E2-4626-B135-B6372171E4C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50C90A9D-D6E2-4626-B135-B6372171E4C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50C90A9D-D6E2-4626-B135-B6372171E4C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26D6FD58-BDC9-40BF-A6E1-862AFBC10289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26D6FD58-BDC9-40BF-A6E1-862AFBC10289}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26D6FD58-BDC9-40BF-A6E1-862AFBC10289}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26D6FD58-BDC9-40BF-A6E1-862AFBC10289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04B20021-799B-4E5E-91DE-330D0DD710E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04B20021-799B-4E5E-91DE-330D0DD710E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04B20021-799B-4E5E-91DE-330D0DD710E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04B20021-799B-4E5E-91DE-330D0DD710E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
