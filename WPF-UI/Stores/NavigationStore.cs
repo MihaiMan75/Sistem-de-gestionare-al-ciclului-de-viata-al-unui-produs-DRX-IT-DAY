@@ -12,15 +12,10 @@ namespace WPF_UI.Stores
     /// <summary>
     /// Represents a class that stores the current view model data.
     /// </summary>
-    public class NavigationStore : ObservableObject
+    public partial class NavigationStore : ObservableObject
     {
+        [ObservableProperty]
         private BaseViewModel _currentViewModel;
 
-        [ObservableProperty]
-        public BaseViewModel CurrentViewModel
-        {
-            get { return _currentViewModel; }
-            set { _currentViewModel = value; }
-        }
     }
 }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPF_UI.ViewModels;
 
 namespace WPF_UI.UserControls
 {
@@ -83,6 +84,8 @@ namespace WPF_UI.UserControls
             {
                 Password = pwdHiddenPassword.Password;
             }
+            if (DataContext is LoginViewModel vm)
+                vm.Password = pwdHiddenPassword.Password;
         }
 
         private void txtVisiblePassword_TextChanged(object sender, TextChangedEventArgs e)

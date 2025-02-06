@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPF_UI.ViewModels;
 
 namespace WPF_UI.UserControls
 {
@@ -26,28 +27,6 @@ namespace WPF_UI.UserControls
         {
             InitializeComponent();
         }
-
-        //private void btnLogin_Click(object sender, RoutedEventArgs e)
-        //{
-        //    string username = txtUsername.txtInput.Text;
-        //    string password = cPassBox.Password;
-
-        //    if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-        //    {
-        //        MessageBox.Show("Please enter both username and password.", "Error");
-        //        return;
-        //    }
-
-        //    if (MainWindow.viewControllerInstance.LogInUser(username, password))
-        //    {
-        //        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new Pages.MainPage();
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Try again!", "Error");
-        //    }
-
-        //}
 
     }
 }

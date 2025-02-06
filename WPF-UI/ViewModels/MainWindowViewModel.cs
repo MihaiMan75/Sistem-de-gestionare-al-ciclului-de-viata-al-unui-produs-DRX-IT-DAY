@@ -11,13 +11,13 @@ using WPF_UI.Stores;
 
 namespace WPF_UI.ViewModels
 {
-    public class MainWindowViewModel: BaseViewModel
+    public partial class MainWindowViewModel: BaseViewModel
     {
         private readonly NavigationStore _navigationStore;
         private readonly INavigationService _navigationService;
 
         [ObservableProperty]
-        public BaseViewModel CurrentViewModel => _navigationStore?.CurrentViewModel;
+        private BaseViewModel _currentViewModel;
 
         public RelayCommand NavigateToLoginCommand { get; }
         public RelayCommand NavigateToTestCommand { get; }
@@ -27,7 +27,8 @@ namespace WPF_UI.ViewModels
         {
             this._navigationStore = NavigationStore;
             _navigationService = new NavigationService(this._navigationStore);
-              
+            CurrentViewModel = _navigationStore?.CurrentViewModel;
+
         }
 
     }
