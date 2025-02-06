@@ -9,7 +9,7 @@ using UI.Services;
 
 namespace UI.ViewModels
 {
-    public class TestPageViewModel : BaseViewModel
+    public class TestPageViewModel : ObservableObject
     {
        
     }

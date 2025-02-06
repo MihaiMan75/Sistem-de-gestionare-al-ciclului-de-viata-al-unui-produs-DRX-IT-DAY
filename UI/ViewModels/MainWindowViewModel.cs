@@ -5,29 +5,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UI.Interfaces;
 using UI.Services;
 using UI.Stores;
 
 namespace UI.ViewModels
 {
-    public class MainWindowViewModel: BaseViewModel
+    public class MainWindowViewModel: ObservableObject
     {
-        private readonly NavigationStore _navigationStore;
-        private readonly INavigationService _navigationService;
-
-        [ObservableProperty]
-        public BaseViewModel CurrentViewModel => _navigationStore?.CurrentViewModel;
+        public NavigationService Navigation { get; }
 
         public RelayCommand NavigateToLoginCommand { get; }
         public RelayCommand NavigateToTestCommand { get; }
-        
 
-        public MainWindowViewModel(NavigationStore NavigationStore)
+        public MainWindowViewModel(NavigationService navigationService)
         {
-            this._navigationStore = NavigationStore;
-            _navigationService = new NavigationService(this._navigationStore);
-              
+            Navigation = navigationService;
+
+            NavigateToLoginCommand = new RelayCommand(() => Navigation.NavigateTo<LoginViewModel>());
+            NavigateToTestCommand = new RelayCommand(() => Navigation.NavigateTo<TestPageViewModel>());
+
+            // Default Page
+            Navigation.NavigateTo<LoginViewModel>();
         }
 
     }

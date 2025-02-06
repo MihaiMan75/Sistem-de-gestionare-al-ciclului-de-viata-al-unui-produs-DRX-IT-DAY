@@ -33,19 +33,9 @@ namespace UI.UserControls
             }
         }
 
-        public static readonly DependencyProperty TextProperty =
-           DependencyProperty.Register(nameof(Text), typeof(string), typeof(CostumTextBoxWithEraseButton), new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        public string Text
-        {
-            get => (string)GetValue(TextProperty);
-            set => SetValue(TextProperty, value);
-        }
-
         public CostumTextBoxWithEraseButton()
         {
             InitializeComponent();
-            txtInput.TextChanged += (s, e) => Text = txtInput.Text;
         }
 
         private void eraseButton_Click(object sender, RoutedEventArgs e)

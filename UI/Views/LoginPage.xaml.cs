@@ -23,7 +23,6 @@ namespace UI.Views
         public LoginPage()
         {
             InitializeComponent();
-
         }
     }
 }

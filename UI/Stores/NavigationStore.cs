@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using UI.ViewModels;
 
 namespace UI.Stores
 {
@@ -14,10 +13,10 @@ namespace UI.Stores
     /// </summary>
     public class NavigationStore : ObservableObject
     {
-        private BaseViewModel _currentViewModel;
+        private object _currentViewModel;
 
         [ObservableProperty]
-        public BaseViewModel CurrentViewModel
+        public object CurrentViewModel
         {
             get { return _currentViewModel; }
             set { _currentViewModel = value; }
