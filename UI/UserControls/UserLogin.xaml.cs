@@ -27,26 +27,27 @@ namespace UI.UserControls
             InitializeComponent();
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
-        {
-          //  string username = txtUsername.txtInput.Text;
-          //  string password = cPassBox.Password;
+        //private void btnLogin_Click(object sender, RoutedEventArgs e)
+        //{
+        //    string username = txtUsername.txtInput.Text;
+        //    string password = cPassBox.Password;
 
-          //  if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-          //  {
-          //      MessageBox.Show("Please enter both username and password.", "Error");
-          //      return;
-          //  }
-          //if(  MainWindow.viewControllerInstance.LogInUser(username, password))
-          //  {
-          //      ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new Pages.MainPage();
-          //  }
-          //  else
-          //  {
-          //      MessageBox.Show("Try again!", "Error");
-          //  }
-            
-        }
-        
+        //    if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        //    {
+        //        MessageBox.Show("Please enter both username and password.", "Error");
+        //        return;
+        //    }
+
+        //    if (MainWindow.viewControllerInstance.LogInUser(username, password))
+        //    {
+        //        ((MainWindow)Application.Current.MainWindow).MainFrame.Content = new Pages.MainPage();
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Try again!", "Error");
+        //    }
+
+        //}
+
     }
 }

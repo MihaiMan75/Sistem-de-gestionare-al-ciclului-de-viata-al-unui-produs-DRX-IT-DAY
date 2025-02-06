@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using UI.Services;
+using UI.Stores;
 using UI.ViewModels;
 
 namespace UI
@@ -15,14 +16,15 @@ namespace UI
     /// </summary>
     public partial class App : Application
     {
-        private readonly NavigationService _navigationService = new NavigationService();
+        private readonly NavigationStore _navigationStore= new NavigationStore();
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
             var mainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(_navigationService)
+                DataContext = new MainWindowViewModel(_navigationStore)
             };
             mainWindow.Show();
         }

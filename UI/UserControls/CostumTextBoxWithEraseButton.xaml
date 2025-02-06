@@ -8,7 +8,7 @@
               d:DesignHeight="40" d:DesignWidth="800">
     <Grid Background="WhiteSmoke">
 
-        <TextBox x:Name="txtInput" Style="{StaticResource CustomTextBoxStyle}"  FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextChanged="txtInput_TextChanged"/>
+        <TextBox x:Name="txtInput" Style="{StaticResource CustomTextBoxStyle}" Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"  FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextChanged="txtInput_TextChanged"/>
         <TextBlock x:Name="tbPlaceHolder" FontSize="16" FontWeight="Light" FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" Text="{Binding PlaceHolder}" Foreground="DarkGray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8" ></TextBlock>
         <Button x:Name="btnErase" Content="X" Width="30" Style="{StaticResource CustomButtonStyle}" HorizontalAlignment="Right" Click="eraseButton_Click"/>
 
