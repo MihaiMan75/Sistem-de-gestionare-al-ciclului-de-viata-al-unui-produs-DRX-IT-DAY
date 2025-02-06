@@ -11,6 +11,9 @@ namespace WPF_UI.ViewModels
 {
     public class TestPageViewModel : BaseViewModel
     {
-       
+        public TestPageViewModel()
+        {
+            
+        }
     }
 }

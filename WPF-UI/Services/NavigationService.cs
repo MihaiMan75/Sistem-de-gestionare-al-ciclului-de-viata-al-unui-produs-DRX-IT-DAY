@@ -10,18 +10,19 @@ using WPF_UI.ViewModels;
 
 namespace WPF_UI.Services
 {
-    [ObservableObject]
-    public partial class NavigationService : INavigationService
+
+    public partial class NavigationService : ObservableObject, INavigationService
     {
         [ObservableProperty]
         private BaseViewModel _currentViewModel;
-        public readonly NavigationStore _navigationStore;
+
+        private readonly NavigationStore _navigationStore;
 
 
         public NavigationService(NavigationStore navigationStore)
         {
             _navigationStore = navigationStore;
-            CurrentViewModel = new LoginViewModel();
+            CurrentViewModel = new LoginViewModel(this);
             _navigationStore.CurrentViewModel = CurrentViewModel;
         }
 

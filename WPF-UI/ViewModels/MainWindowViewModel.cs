@@ -25,10 +25,15 @@ namespace WPF_UI.ViewModels
 
         public MainWindowViewModel(NavigationStore NavigationStore)
         {
-            this._navigationStore = NavigationStore;
-            _navigationService = new NavigationService(this._navigationStore);
-            CurrentViewModel = _navigationStore?.CurrentViewModel;
+            _navigationStore = NavigationStore;
+            _navigationService = new NavigationService(_navigationStore);
+            _navigationStore.PropertyChanged += OnCurrentViewModelChanged;
+            CurrentViewModel = _navigationStore.CurrentViewModel;
 
+        }
+        private void OnCurrentViewModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            CurrentViewModel = _navigationStore.CurrentViewModel;
         }
 
     }

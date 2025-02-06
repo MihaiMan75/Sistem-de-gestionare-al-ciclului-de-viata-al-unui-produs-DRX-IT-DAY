@@ -16,7 +16,8 @@ namespace WPF_UI.ViewModels
 
     public partial class LoginViewModel: BaseViewModel
     {
-        private readonly IAuthService authService;
+        private readonly IAuthService _authService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private string username;
@@ -24,18 +25,21 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private string password;
 
-        public LoginViewModel()
+        public LoginViewModel(INavigationService navigationService)
         {
-            authService = new AuthService();
+            _authService = new AuthService();
+            _navigationService = navigationService;
         }
 
         [RelayCommand]
         public void Login()
         {
             MessageBox.Show($"{Username} , {Password}");
-            if (authService.Login(Username, Password))
+            if (_authService.Login(Username, Password) || true)// Delete TRUE after Implemeting Proper Navigation
             {
                 //navigate to the next page
+                _navigationService.NavigateTo<TestPageViewModel>();
+
             }
             else
             {

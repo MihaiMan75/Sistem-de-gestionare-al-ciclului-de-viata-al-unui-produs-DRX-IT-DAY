@@ -15,7 +15,7 @@ namespace WPF_UI.Stores
     public partial class NavigationStore : ObservableObject
     {
         [ObservableProperty]
-        private BaseViewModel _currentViewModel;
+        private BaseViewModel? _currentViewModel;
 
     }
 }
