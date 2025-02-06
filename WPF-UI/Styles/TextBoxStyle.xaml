@@ -1,0 +1,76 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="CustomTextBoxStyle" TargetType="TextBox">
+        
+        <!-- Normal state -->
+        <Setter Property="FontFamily" Value="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="DarkGray"/>
+        <Setter Property="Padding" Value="10,5,0,0"/>
+        <Setter Property="BorderBrush" Value="#636e72"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="WhiteSmoke" Offset="0.5"/>
+                    <GradientStop Color="WhiteSmoke" Offset="1.1"/>
+                </LinearGradientBrush>
+                
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        
+        
+
+        <!-- Focused state -->
+        <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="BorderBrush" Value="#00b894"/>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#dfe6e9" Offset="0"/>
+                            <GradientStop Color="#dfe6e9" Offset="1.3"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Opacity" Value="1"/>
+            </Trigger>
+
+            <!-- Mouse over state -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="#00b894"/>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#dfe6e9" Offset="0"/>
+                            <GradientStop Color="#dfe6e9" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Opacity" Value="1"/>
+            </Trigger>
+            
+            <!-- Mouse leave or unfocused state -->
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="BorderBrush" Value="#636e72"/>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="WhiteSmoke" Offset="0.5"/>
+                            <GradientStop Color="WhiteSmoke" Offset="1.1"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Opacity" Value="1"/>
+                <Setter Property="Foreground" Value="DarkGray"/>
+            </Trigger>
+            
+        </Style.Triggers>
+    </Style>
+    
+</ResourceDictionary>
