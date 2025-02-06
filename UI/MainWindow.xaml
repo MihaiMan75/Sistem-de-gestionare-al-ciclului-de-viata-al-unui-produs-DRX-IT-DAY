@@ -96,7 +96,7 @@
                 <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
                 <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
             </StackPanel>
-            <Frame  x:Name="MainContent" Content="{Binding Navigation.CurrentViewModel}" Grid.Column="1" Padding="5"/>
+            <Frame  x:Name="MainContent" Content="{Binding CurrentViewModel}" Grid.Column="1" Padding="5"/>
         </Grid>
     </Grid>
 </Window>

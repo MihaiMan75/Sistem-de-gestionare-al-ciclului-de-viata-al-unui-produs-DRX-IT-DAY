@@ -10,6 +10,6 @@
       Title="LoginPage">
 
     <Grid>
-        <UserControls:UserLogin/>
+        <UserControls:UserLogin DataContext="{Binding}"/>
     </Grid>
 </Page>
