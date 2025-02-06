@@ -1,0 +1,102 @@
+﻿<Window x:Class="WPF_UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_UI"
+        mc:Ignorable="d"
+        Title="Sistem De Gestionare a Ciclului de Viata a unui Produs" Height="450" Width="800 "
+        xmlns:UserControls="clr-namespace:WPF_UI.UserControls"
+        xmlns:Views="clr-namespace:WPF_UI.Views"
+        xmlns:ViewModels="clr-namespace:WPF_UI.ViewModels"
+        SizeChanged="Window_SizeChanged"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" Opacity="0">
+            <GradientStop Color="#00b894" Offset="0" />
+            <GradientStop Color="#00b894" Offset="1" />
+        </LinearGradientBrush>
+    </Window.Background>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type ViewModels:LoginViewModel}">
+            <Views:LoginPage/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type ViewModels:TestPageViewModel}">
+            <Views:TestPage/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.06*"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border CornerRadius="15,15,0,0" Grid.Row="0" Grid.RowSpan="2">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.5" />
+            </Border.Effect>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" Opacity="0.8">
+                    <GradientStop Color="#00b894" Offset="0" />
+                    <GradientStop Color="#00b894" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+        <!--Window Buttons-->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical">
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,3,10,0">
+                <Button x:Name="btnMinimize"  Click="btnMinimize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="-" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
+                <Button x:Name="btnMaximize"  Click="btnMaximize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="⏹️" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
+                <Button x:Name="btnClose"  Click="btnClose_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Content="❌" Foreground="WhiteSmoke" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
+            </StackPanel>
+
+        </Grid>
+        <!--Window Buttons-->
+
+        <!--Background-->
+        <Border Grid.Row="0" Grid.RowSpan="2" BorderBrush="DarkMagenta" Opacity="0.98" BorderThickness="0" CornerRadius="35,35,0,0" Margin="0,25,0,0">
+            <Border.Background>
+                <RadialGradientBrush RadiusX="3" RadiusY="0.8" Opacity="1">
+                    <GradientStop Color="#2d3436" Offset="0" />
+                    <GradientStop Color="#636e72" Offset="1" />
+                </RadialGradientBrush>
+            </Border.Background>
+            <Border Margin="60,0,0,0" BorderBrush="DarkMagenta" Opacity="0.98" BorderThickness="0" CornerRadius="0,35,0,35">
+                <Border.Background>
+                    <RadialGradientBrush RadiusX="3" RadiusY="0.8" Opacity="1">
+                        <GradientStop Color="AliceBlue" Offset="0" />
+                        <GradientStop Color="WhiteSmoke" Offset="1" />
+                    </RadialGradientBrush>
+                </Border.Background>
+            </Border>
+        </Border>
+        <!--Background-->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
+                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
+                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
+                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
+                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
+                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
+                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}">💾</Button>
+            </StackPanel>
+            <Frame  x:Name="MainContent" Content="{Binding CurrentViewModel}" Grid.Column="1" Padding="5"/>
+        </Grid>
+    </Grid>
+</Window>
