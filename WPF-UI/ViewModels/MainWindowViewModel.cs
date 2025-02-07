@@ -36,5 +36,45 @@ namespace WPF_UI.ViewModels
             CurrentViewModel = _navigationStore.CurrentViewModel;
         }
 
+        [RelayCommand]
+        public void NavigateHome()
+        {
+            _navigationService.NavigateTo<UserDashboardViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateProductManagement()
+        {
+            _navigationService.NavigateTo<ProductManagementViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateProductDetails()
+        {
+            _navigationService.NavigateTo<ProductDetailsViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateBOMManagement()
+        {
+            _navigationService.NavigateTo<BOMManagementViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateUserManagement()
+        {
+            _navigationService.NavigateTo<UserManagementViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateReports()
+        {
+            _navigationService.NavigateTo<ReportsViewModel>();
+        }
+
+
+
+
+
     }
 }

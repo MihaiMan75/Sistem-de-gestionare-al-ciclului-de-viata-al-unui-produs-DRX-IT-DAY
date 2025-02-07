@@ -1,0 +1,132 @@
+﻿<Page x:Class="WPF_UI.Views.BOM_Management_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPF_UI.Views" xmlns:usercontrols="clr-namespace:WPF_UI.UserControls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="BOM_Management_Page">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Side - Available Materials -->
+        <GroupBox Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" 
+                 Header="Available Materials">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Search Box -->
+                <usercontrols:CostumTextBoxWithEraseButton Grid.Row="0" 
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="5"
+                         Height="25"
+                         PlaceHodler="Search materials..."/>
+
+                <!-- Materials List -->
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding AvailableMaterials}"
+                          SelectedItem="{Binding SelectedMaterial}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Number" 
+                                          Binding="{Binding MaterialNumber}" 
+                                          Width="Auto"/>
+                        <DataGridTextColumn Header="Description" 
+                                          Binding="{Binding MaterialDescription}" 
+                                          Width="*"/>
+                        <DataGridTextColumn Header="Weight" 
+                                          Binding="{Binding Weight}" 
+                                          Width="Auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+
+        <!-- Middle - Add/Remove Buttons -->
+        <StackPanel Grid.Row="1" Grid.Column="1" 
+                    VerticalAlignment="Center" 
+                    Margin="10,0">
+            <Button Content="Add >" 
+                    Command="{Binding AddMaterialCommand}"
+                    Width="100" 
+                    Margin="0,0,0,10"/>
+            <Button Content="Remove" 
+                    Command="{Binding RemoveMaterialCommand}"
+                    Width="100"/>
+        </StackPanel>
+
+        <!-- Right Side - Current BOM -->
+        <GroupBox Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" 
+                 Header="Current BOM">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- BOM Info -->
+                <StackPanel Grid.Row="0" Margin="5">
+                    <TextBlock Text="BOM Name:"/>
+                    <TextBox Text="{Binding CurrentBOM.Name, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,5,0,10"/>
+                </StackPanel>
+
+                <!-- BOM Materials -->
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding BOMMaterials}"
+                          SelectedItem="{Binding SelectedBOMMaterial}"
+                          AutoGenerateColumns="False"
+                          Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Number" 
+                                          Binding="{Binding MaterialNumber}" 
+                                          Width="Auto"
+                                          IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Description" 
+                                          Binding="{Binding MaterialDescription}" 
+                                          Width="*"
+                                          IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Quantity" 
+                                          Binding="{Binding Quantity}" 
+                                          Width="Auto"/>
+                        <DataGridComboBoxColumn Header="Unit" 
+                                              SelectedItemBinding="{Binding UnitMeasureCode}"
+                                              ItemsSource="{Binding DataContext.UnitMeasures, 
+                                                          RelativeSource={RelativeSource AncestorType=Window}}"
+                                              Width="Auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Save/Cancel Buttons -->
+                <StackPanel Grid.Row="2" 
+                          Orientation="Horizontal" 
+                          HorizontalAlignment="Right"
+                          Margin="5">
+                    <Button Content="Cancel" 
+                            Command="{Binding CancelCommand}"
+                            Width="100" 
+                            Margin="0,0,10,0"/>
+                    <Button Content="Save" 
+                            Command="{Binding SaveCommand}"
+                            Width="100"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Page>

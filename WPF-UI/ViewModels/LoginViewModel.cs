@@ -38,7 +38,7 @@ namespace WPF_UI.ViewModels
             if (_authService.Login(Username, Password) || true)// Delete TRUE after Implemeting Proper Navigation
             {
                 //navigate to the next page
-                _navigationService.NavigateTo<TestPageViewModel>();
+                _navigationService.NavigateTo<UserDashboardViewModel>();
 
             }
             else
