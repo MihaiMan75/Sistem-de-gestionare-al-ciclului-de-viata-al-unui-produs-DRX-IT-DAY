@@ -8,9 +8,9 @@ namespace BusinessLogic.Models
 {
     public class Material
     {
-        public int materialNumber {  get; set; }
-        public string materialDescription {  get; set; }
-        public float weight {  get; set; }
-        public float height {  get; set; }
+        public int MaterialNumber {  get; set; }
+        public string MaterialDescription {  get; set; }
+        public float Weight {  get; set; }
+        public float Height {  get; set; }
     }
 }

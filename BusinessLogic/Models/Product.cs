@@ -9,13 +9,14 @@ namespace BusinessLogic.Models
 {
     public class Product
     {
-        public int id { get; set; }
-        List<BoomMaterial> materials { get; set; }
-        public string description { get; set; }
-        public float estimatedHeight { get; set; }
-        public float estimatedWidth { get; set; }
-        public float estimatedW { get; set; }
-        public Dictionary<Stage, DateTime> stageHistory { get; set; } = new();
-        public string name { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public float EstimatedHeight { get; set; }
+        public float EstimatedWidth { get; set; }
+        public float EstimatedWeight { get; set; }
+        public Bom ProductBom { get; set; }
+        public List<ProductStageHistory> StageHistory { get; set; } = new List<ProductStageHistory>();
+        public Stage Curentstage {  get; set; }
     }
 }

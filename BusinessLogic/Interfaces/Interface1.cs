@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLogic.Enums
+namespace BusinessLogic.Interfaces
 {
-    public enum Stage
+    internal interface Interface1
     {
-        New = 1,
-        InProgress = 2,
-        Completed = 3
-
     }
 }
