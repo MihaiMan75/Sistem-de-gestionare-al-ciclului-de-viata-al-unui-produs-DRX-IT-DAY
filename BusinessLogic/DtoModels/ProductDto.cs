@@ -1,5 +1,4 @@
-﻿using BusinessLogic.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Models
 {
-    public class Product
+    public class ProductDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,8 +14,8 @@ namespace BusinessLogic.Models
         public float EstimatedHeight { get; set; }
         public float EstimatedWidth { get; set; }
         public float EstimatedWeight { get; set; }
-        public Bom ProductBom { get; set; }
-        public List<ProductStageHistory> StageHistory { get; set; } = new List<ProductStageHistory>();
-        public Stage Curentstage {  get; set; }
+        public BomDto ProductBom { get; set; }
+        public List<ProductStageHistoryDto> StageHistory { get; set; } = new List<ProductStageHistoryDto>();
+        public StageDto Curentstage {  get; set; }
     }
 }

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Models
 {
-    public class ProductStageHistory
+    public class BomDto
     {
-        public Stage ProductStage;
-         public DateTime StartDate;
-         public DateTime EndDate;
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public BomMaterialDto BomMaterial { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Models
 {
-    public class Material
+    public class MaterialDto
     {
         public int MaterialNumber {  get; set; }
         public string MaterialDescription {  get; set; }

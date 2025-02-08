@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Models
 {
-    public class Stage
+    public class UserDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public List<RoleDto> Roles { get; set; }
     }
 }
