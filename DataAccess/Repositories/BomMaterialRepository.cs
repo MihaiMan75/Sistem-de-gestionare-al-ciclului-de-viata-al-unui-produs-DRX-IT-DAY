@@ -1,4 +1,4 @@
-﻿using DataAccess.Dtos;
+﻿using DataAccess.Models;
 using DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-    public class BomMaterialsRepository : BaseRepository<BomMaterials>
+    public class BomMaterialRepository : BaseRepository<BomMaterial>
     {
-        public BomMaterialsRepository(IDbContext context) : base(context)
+        public BomMaterialRepository(IDbContext context) : base(context)
         {
         }
 
         protected override string TableName => throw new NotImplementedException();
 
-        public override Task<int> AddAsync(BomMaterials entity)
+        public override Task<int> AddAsync(BomMaterial entity)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<bool> UpdateAsync(BomMaterials entity)
+        public override Task<bool> UpdateAsync(BomMaterial entity)
         {
             throw new NotImplementedException();
         }
