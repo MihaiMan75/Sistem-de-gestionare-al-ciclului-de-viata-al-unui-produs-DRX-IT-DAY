@@ -72,8 +72,11 @@ namespace WPF_UI.ViewModels
             _navigationService.NavigateTo<ReportsViewModel>();
         }
 
-
-
+        [RelayCommand]
+        public void NavigateMaterialsManagement()
+        {
+            _navigationService.NavigateTo<MaterialManagementViewModel>();
+        }
 
 
     }

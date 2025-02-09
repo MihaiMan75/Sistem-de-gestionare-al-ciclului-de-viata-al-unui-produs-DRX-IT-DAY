@@ -46,6 +46,9 @@
         <DataTemplate DataType="{x:Type ViewModels:UserManagementViewModel}">
             <Views:User_Management_Page/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type ViewModels:MaterialManagementViewModel}">
+            <Views:Materials_Management_Page/>
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
@@ -106,13 +109,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Center">
-                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}" Command="{Binding NavigateHomeCommand}">🏠</Button>
-                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateProductManagementCommand}">🔧</Button>
-                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateProductDetailsCommand}">🏗️</Button>
-                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateBOMManagementCommand}">🔩</Button>
-                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateUserManagementCommand}">👤</Button>
-                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateReportsCommand}">📄</Button>
-                <Button Height="50" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateChartsCommand}">📊</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}" Command="{Binding NavigateHomeCommand}">🏠</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateProductManagementCommand}">🔧</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateProductDetailsCommand}">🏗️</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateBOMManagementCommand}">🔩</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateMaterialsManagementCommand}">💎</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateUserManagementCommand}">👤</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateReportsCommand}">📄</Button>
+                <Button Height="40" Width="50" Margin="5" Style="{StaticResource TransparentButton}"  Command="{Binding NavigateChartsCommand}">📊</Button>
             </StackPanel>
             <Frame  x:Name="MainContent" Content="{Binding CurrentViewModel}" Grid.Column="1" Padding="5" NavigationUIVisibility="Hidden"/>
         </Grid>

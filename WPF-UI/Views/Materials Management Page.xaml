@@ -1,0 +1,121 @@
+﻿<Page x:Class="WPF_UI.Views.Materials_Management_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPF_UI.Views" xmlns:usercontrols="clr-namespace:WPF_UI.UserControls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Materials_Management_Page">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left side - Material List -->
+        <GroupBox Header="Material List" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="0,0,10,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Search Box -->
+                <usercontrols:CostumTextBoxWithEraseButton Grid.Row="0" 
+                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="5"
+                      Height="25"
+                      PlaceHodler="Search materials..."/>
+
+                <!-- Materials DataGrid -->
+                <DataGrid Grid.Row="1" 
+                       ItemsSource="{Binding Materials}"
+                       SelectedItem="{Binding SelectedMaterial}"
+                       AutoGenerateColumns="False"
+                       IsReadOnly="True"
+                       Margin="5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Number" 
+                                       Binding="{Binding MaterialNumber}" 
+                                       Width="Auto"/>
+                        <DataGridTextColumn Header="Description" 
+                                       Binding="{Binding MaterialDescription}" 
+                                       Width="*"/>
+                        <DataGridTextColumn Header="Weight" 
+                                       Binding="{Binding Weight}" 
+                                       Width="Auto"/>
+                        <DataGridTextColumn Header="Height" 
+                                       Binding="{Binding Height}" 
+                                       Width="Auto"/>
+                        <DataGridTextColumn Header="Width" 
+                                       Binding="{Binding Width}" 
+                                       Width="Auto"/>
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Edit" 
+                                             Command="{Binding DataContext.EditCommand, 
+                                             RelativeSource={RelativeSource AncestorType=Window}}"
+                                             CommandParameter="{Binding}"
+                                             Margin="2"/>
+                                        <Button Content="Delete" 
+                                             Command="{Binding DataContext.DeleteCommand, 
+                                             RelativeSource={RelativeSource AncestorType=Window}}"
+                                             CommandParameter="{Binding}"
+                                             Margin="2"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+
+        <!-- Right side - Material Form -->
+        <GroupBox Header="Material Details" Grid.Row="0" Grid.Column="1" Width="400">
+            <StackPanel Margin="10">
+                <TextBlock Text="Material Number:"/>
+                <TextBox Text="{Binding CurrentMaterial.MaterialNumber, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0,5,0,10"/>
+
+                <TextBlock Text="Description:"/>
+                <TextBox Text="{Binding CurrentMaterial.MaterialDescription, UpdateSourceTrigger=PropertyChanged}"
+                      TextWrapping="Wrap" 
+                      Height="60"
+                      Margin="0,5,0,10"/>
+
+                <TextBlock Text="Weight:"/>
+                <TextBox Text="{Binding CurrentMaterial.Weight, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0,5,0,10"/>
+
+                <TextBlock Text="Height:"/>
+                <TextBox Text="{Binding CurrentMaterial.Height, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0,5,0,10"/>
+
+                <TextBlock Text="Width:"/>
+                <TextBox Text="{Binding CurrentMaterial.Width, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0,5,0,10"/>
+
+                <StackPanel Orientation="Horizontal" 
+                       HorizontalAlignment="Right" 
+                       Margin="0,20,0,0">
+                    <Button Content="Cancel" 
+                         Command="{Binding CancelCommand}" 
+                         Width="100" 
+                         Margin="0,0,10,0"/>
+                    <Button Content="Save" 
+                         Command="{Binding SaveCommand}"
+                         Width="100" 
+                         IsDefault="True"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Page>
