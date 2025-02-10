@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Fonts\Comfortaa-VariableFont_wght.ttf" />
   </ItemGroup>
 

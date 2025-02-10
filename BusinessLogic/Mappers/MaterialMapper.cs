@@ -17,7 +17,8 @@ namespace BusinessLogic.Mappers
                 MaterialNumber = material.material_number,
                 MaterialDescription = material.materialDescription,
                 Weight = material.weight,
-                Height = material.height
+                Height = material.height,
+                Width = material.width
             };
         }
 
@@ -39,7 +40,8 @@ namespace BusinessLogic.Mappers
                 material_number = dto.MaterialNumber,
                 materialDescription = dto.MaterialDescription,
                 weight = dto.Weight,
-                height = dto.Height
+                height = dto.Height,
+                width = dto.Width
             };
         }
 
