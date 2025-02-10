@@ -15,7 +15,7 @@ namespace BusinessLogic.Mappers
             return new MaterialDto
             {
                 MaterialNumber = material.material_number,
-                MaterialDescription = material.materialDescription,
+                MaterialDescription = material.material_description,
                 Weight = material.weight,
                 Height = material.height,
                 Width = material.width
@@ -38,7 +38,7 @@ namespace BusinessLogic.Mappers
             return new Material
             {
                 material_number = dto.MaterialNumber,
-                materialDescription = dto.MaterialDescription,
+                material_description = dto.MaterialDescription,
                 weight = dto.Weight,
                 height = dto.Height,
                 width = dto.Width

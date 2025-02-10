@@ -34,7 +34,7 @@ namespace WPF_UI.ViewModels
         public MaterialManagementViewModel()
         {
             //delete later
-            string connectionString = "Data Source=LaptopDELL;Initial Catalog=TestDb;Integrated Security=True;Pooling=False;Encrypt=True;TrustServerCertificate=True";
+            string connectionString = "Data Source=Lenovo_Teo;Initial Catalog=DRXITDAY;Integrated Security=True;TrustServerCertificate=True";
             DbContext dbContext = new DbContext(connectionString);
             RepositoryFactory repositoryFactory=new RepositoryFactory(dbContext);
             _materialService = new MaterialsService(repositoryFactory);
@@ -54,7 +54,7 @@ namespace WPF_UI.ViewModels
             }
             catch (Exception ex)
             {
-                // Handle error - could show message to user
+                
                 System.Diagnostics.Debug.WriteLine($"Error loading materials: {ex.Message}");
             }
         }

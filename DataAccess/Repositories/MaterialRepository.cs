@@ -15,23 +15,23 @@ namespace DataAccess.Repositories
         {
         }
 
-        protected override string TableName => "Material";
+        protected override string TableName => "materials";
 
         public override async Task<int> AddAsync(Material entity)
         {
             using (var connection = _context.CreateConnection())
-            {
+            { // de folosit tabelename in insert in loc de text simplu
                 const string sql = @"
-        INSERT INTO Material 
-            (material_number, materialDescription, height, width, weight)
+        INSERT INTO materials 
+            (material_number, material_description, height, width, weight)
         OUTPUT INSERTED.material_number
         VALUES 
-            (@material_number, @materialDescription, @height, @width, @weight);";
+            (@material_number, @material_description, @height, @width, @weight);";
 
                 return await connection.QuerySingleAsync<int>(sql, new
                 {
                     entity.material_number,
-                    entity.materialDescription,
+                    entity.material_description,
                     entity.height,
                     entity.width,
                     entity.weight
@@ -42,11 +42,11 @@ namespace DataAccess.Repositories
         public override async Task<bool> UpdateAsync(Material entity)
         {
             using (var connection = _context.CreateConnection())
-            {
+            {// de folosit tabelename in insert in loc de text simplu
                 const string sql = @"
-                UPDATE Material 
+                UPDATE materials 
                 SET 
-                    materialDescription = @materialDescription,
+                    material_description = @material_description,
                     height = @height,
                     width = @width,
                     weight = @weight
@@ -55,7 +55,7 @@ namespace DataAccess.Repositories
                 var rowsAffected = await connection.ExecuteAsync(sql, new
                 {
                     entity.material_number,
-                    entity.materialDescription,
+                    entity.material_description,
                     entity.height,
                     entity.width,
                     entity.weight
