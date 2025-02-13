@@ -15,8 +15,6 @@ namespace BusinessLogic.Interfaces
         Task<bool> UpdateMaterialAsync(MaterialDto material);
         Task<bool> DeleteMaterialAsync(int id);
         Task<IEnumerable<MaterialDto>> GetMaterialsWithPaginationAsync(int pageNumber, int pageSize);
-        
-
 
     }
 }
