@@ -33,12 +33,12 @@ namespace WPF_UI.ViewModels
 
         public MaterialManagementViewModel()
         {
-            //delete later
-            string connectionString = "Data Source=Lenovo_Teo;Initial Catalog=DRXITDAY;Integrated Security=True;TrustServerCertificate=True";
-            DbContext dbContext = new DbContext(connectionString);
-            RepositoryFactory repositoryFactory=new RepositoryFactory(dbContext);
-            _materialService = new MaterialsService(repositoryFactory);
-            //delete later
+            ////delete later
+            //string connectionString = "";
+            //DbContext dbContext = new DbContext(connectionString);
+            //RepositoryFactory repositoryFactory=new RepositoryFactory(dbContext);
+            //_materialService = new MaterialsService(repositoryFactory);
+            ////delete later
             //_materialService = materialService;
             LoadMaterials();
             CurrentMaterial = new MaterialDto();
