@@ -9,7 +9,7 @@ namespace DataAccess.Models
     public class Material
     {
         public int material_number {  get; set; }
-        public string materialDescription { get; set; }
+        public string material_description { get; set; }
         public double height { get; set; }
         public double width { get; set; }
         public double weight { get; set; }

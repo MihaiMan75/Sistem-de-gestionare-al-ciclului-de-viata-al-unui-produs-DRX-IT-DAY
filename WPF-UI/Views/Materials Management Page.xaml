@@ -60,15 +60,15 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="Edit" 
-                                             Command="{Binding DataContext.EditCommand, 
-                                             RelativeSource={RelativeSource AncestorType=Window}}"
-                                             CommandParameter="{Binding}"
-                                             Margin="2"/>
-                                        <Button Content="Delete" 
-                                             Command="{Binding DataContext.DeleteCommand, 
-                                             RelativeSource={RelativeSource AncestorType=Window}}"
-                                             CommandParameter="{Binding}"
-                                             Margin="2"/>
+                                            Command="{Binding DataContext.EditCommand, 
+                                            RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Margin="2"/>
+                                                        <Button Content="Delete" 
+                                            Command="{Binding DataContext.DeleteCommand, 
+                                            RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Margin="2"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
