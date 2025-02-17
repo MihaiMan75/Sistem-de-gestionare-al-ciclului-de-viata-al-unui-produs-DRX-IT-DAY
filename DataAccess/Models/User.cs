@@ -8,10 +8,10 @@ namespace DataAccess.Models
 {
     public class User
     {
-        public int id {  get; set; }
+        public int id_user {  get; set; }
         public string email { get; set; }
         public string name { get; set; }
-        public string passwordHashed { get; set; }
-        public string phoneNumber { get; set; }
+        public string PasswordHashed { get; set; }
+        public string phone_number { get; set; }
     }
 }

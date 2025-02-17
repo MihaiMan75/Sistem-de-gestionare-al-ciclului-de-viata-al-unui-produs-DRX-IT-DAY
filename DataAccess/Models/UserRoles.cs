@@ -8,8 +8,8 @@ namespace DataAccess.Models
 {
     public class UserRoles
     {
-        public int roleId { get; set; }
-        public int userId { get; set; }
+        public int role_id { get; set; }
+        public int id_user { get; set; }
    
     }
 }

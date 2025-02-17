@@ -8,9 +8,9 @@ namespace DataAccess.Models
 {
     public class BomMaterial
     {
-        public int bomId {  get; set; }
-        public int materialNumber { get; set; }
+        public int bom_id {  get; set; }
+        public int material_number { get; set; }
         public double qty { get; set; }
-        public string unitMeasureCode { get; set; }//de vazut cum tratam partea de ucum
+        public string unit_measure_code { get; set; }//de vazut cum tratam partea de ucum
     }
 }
