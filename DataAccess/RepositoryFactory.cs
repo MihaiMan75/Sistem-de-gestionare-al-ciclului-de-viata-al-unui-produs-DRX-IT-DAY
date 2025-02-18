@@ -8,13 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess
 {
-    public class RepositoryFactory
+    public class RepositoryFactory : IRepositoryFactory
     {
-        // RepositoryFactory.cs
-
         private readonly IDbContext _dbContext;
-
-        // We can use a dictionary to cache repositories if needed
 
         public RepositoryFactory(IDbContext dbContext)
         {
