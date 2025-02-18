@@ -15,35 +15,34 @@ namespace BusinessLogic.Services
 {
     public class MaterialsService : IMaterialsService
     {
-        private readonly RepositoryFactory _repositoryFactory;
-        private readonly IRepository<Material> _materialsRepository;
+        private readonly IRepositoryFactory _repositoryFactory;
+        private readonly IRepository<Material> _materialRepository;
 
-        public MaterialsService(RepositoryFactory repositoryFactory)
+        public MaterialsService(IRepositoryFactory repositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
-            _materialsRepository = repositoryFactory.CreateMaterialRepository();
+            _materialRepository = repositoryFactory.CreateMaterialRepository();
         }
+
+
         public async Task<IEnumerable<MaterialDto>> GetAllMaterialsAsync()
         {
-            var materials = await _materialsRepository.GetAllAsync();
+            var materials = await _materialRepository.GetAllAsync();
             return MaterialMapper.ToDto(materials.ToList());
         }
 
         public async Task<MaterialDto> GetMaterialByIdAsync(int id)
         {
-            var material = await _materialsRepository.GetByIdAsync(id);
-            return material != null ? MaterialMapper.ToDto(material) : null;
+            var material = await _materialRepository.GetByIdAsync(id);
+            return MaterialMapper.ToDto(material);
         }
 
         public async Task<int> CreateMaterialAsync(MaterialDto materialDto)
         {
-            if (materialDto == null)
-                throw new ArgumentNullException(nameof(materialDto));
-
-            ValidateMaterial(materialDto);
+            await Validate(materialDto);
 
             var material = MaterialMapper.FromDto(materialDto);
-            return await _materialsRepository.AddAsync(material);
+            return await _materialRepository.AddAsync(material);
         }
 
         public async Task<bool> UpdateMaterialAsync(MaterialDto materialDto)
@@ -51,15 +50,15 @@ namespace BusinessLogic.Services
             if (materialDto == null)
                 throw new ArgumentNullException(nameof(materialDto));
 
-            ValidateMaterial(materialDto);
+            await Validate(materialDto);
 
             var material = MaterialMapper.FromDto(materialDto);
-            return await _materialsRepository.UpdateAsync(material);
+            return await _materialRepository.UpdateAsync(material);
         }
 
         public async Task<bool> DeleteMaterialAsync(int id)
         {
-            return await _materialsRepository.DeleteAsync(id);
+            return await _materialRepository.DeleteAsync(id);
         }
 
         public async Task<IEnumerable<MaterialDto>> GetMaterialsWithPaginationAsync(int pageNumber, int pageSize)
@@ -67,12 +66,16 @@ namespace BusinessLogic.Services
             if (pageNumber < 1) throw new ArgumentException("Page number must be greater than 0");
             if (pageSize < 1) throw new ArgumentException("Page size must be greater than 0");
 
-            var materials = await _materialsRepository.GetWithPaginationAsync(pageNumber, pageSize);
+            var materials = await _materialRepository.GetWithPaginationAsync(pageNumber, pageSize);
             return MaterialMapper.ToDto(materials.ToList());
         }
 
-        private void ValidateMaterial(MaterialDto material)
+        private async Task Validate(MaterialDto material)
         {
+
+            if (material == null)
+                throw new ArgumentNullException(nameof(material));
+
             if (string.IsNullOrWhiteSpace(material.MaterialDescription))
                 throw new ArgumentException("Material description cannot be empty");
 

@@ -11,7 +11,7 @@ namespace BusinessLogic.DtoModels
     {
         public double Quantity { get; set; }
         public string UnitMeasureCode { get; set; } 
-        public List<MaterialDto> Materials { get; set; } = new List<MaterialDto>();
+        public MaterialDto Material { get; set; }
         public int BomId { get; set; }
     }
 }

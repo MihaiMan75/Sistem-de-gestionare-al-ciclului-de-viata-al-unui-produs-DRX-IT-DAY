@@ -10,9 +10,9 @@ namespace BusinessLogic.Mappers
 {
     public static class ProductMapper
     {
-        public static ProductDto ToDto(Product product, Bom bom, BomMaterial bomMaterial, List<Material> materials, List<ProductStageHistory> productStageHistories, Dictionary<int, Stage> stagesDict)
+        public static ProductDto ToDto(Product product, BomDto bomDto, List<ProductStageHistoryDto> productStageHistoryDtos)
         {
-            var lastStage = stagesDict[productStageHistories.MaxBy(psh => psh.endOfStage).stageId];
+            var currentDate= DateTime.Now;
             return new ProductDto
             {
                 Id = product.id,
@@ -21,9 +21,11 @@ namespace BusinessLogic.Mappers
                 EstimatedHeight = product.estimated_height,
                 EstimatedWidth = product.estimated_width,
                 EstimatedWeight = product.estimated_weight,
-                ProductBom = BomMapper.ToDto(bom, bomMaterial, materials),
-                StageHistory = ProductStageHistoryMapper.ToDto(productStageHistories, stagesDict),
-                Curentstage = StageMapper.ToDto(lastStage)
+                ProductBom = bomDto,
+                StageHistory = productStageHistoryDtos,
+                Curentstage = productStageHistoryDtos
+                   .Where(stage => stage.StartDate <= currentDate)
+                    .MaxBy(stage => stage.StartDate)?.ProductStage
             };
         }
 

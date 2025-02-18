@@ -14,10 +14,10 @@ namespace BusinessLogic.Mappers
         {
             return new UserDto
             {
-                Id = user.id,
+                Id = user.id_user,
                 Name = user.name,
                 Email = user.email,
-                PhoneNumber = user.phoneNumber,
+                PhoneNumber = user.phone_number,
                 Roles = RoleMapper.ToDto(roles)
             };
         }
@@ -26,10 +26,10 @@ namespace BusinessLogic.Mappers
         {
             return new User
             {
-                id = dto.Id,
+                id_user = dto.Id,
                 name = dto.Name,
                 email = dto.Email,
-                phoneNumber = dto.PhoneNumber,
+                phone_number = dto.PhoneNumber,
             };
         }
 

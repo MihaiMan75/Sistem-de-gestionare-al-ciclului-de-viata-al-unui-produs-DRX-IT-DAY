@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Interfaces
 {
-    public interface IRoleSerivce
+    public interface IRoleService
     {
         Task<IEnumerable<RoleDto>> GetAllRolesAsync();
         Task<RoleDto> GetRoleByIdAsync(int id);

@@ -10,10 +10,10 @@ namespace BusinessLogic.Interfaces
     public interface IProductStageHistoryService // Not Final Implementation, this may be a flawed design
     {
         Task<IEnumerable<ProductStageHistoryDto>> GetAllProductsHistoryAsync();
-        Task<ProductStageHistoryDto> GetProductStageHistoryByIdAsync(int id); //this should be a IEnumerable?
+        Task<ProductStageHistoryDto> GetProductStageHistoryByIdAsync(int productId,int stageId);
         Task<int> CreateProductStageHistoryAsync(ProductStageHistoryDto productStageHistory);
         Task<bool> UpdateProductStageHistoryAsync(ProductStageHistoryDto productStageHistory);
-        Task<bool> DeleteProductStageHistoryAsync(int id);
-        Task<IEnumerable<ProductStageHistoryDto>> GetProductsStageHistoryWithPaginationAsync(int pageNumber, int pageSize);
+        Task<bool> DeleteProductStageHistoryAsync(int productId, int stageId);
+        Task<List<ProductStageHistoryDto>> GetProductStageHistoriesByProductIdAsync(int ProductId);
     }
 }

@@ -5,13 +5,13 @@ namespace BusinessLogic.Mappers
 {
     static class BomMapper
     {
-        public static BomDto ToDto(Bom bom, BomMaterial bomMaterial,List<Material> materials)
+        public static BomDto ToDto(Bom bom, List<BomMaterialDto> bomMaterials)
         {
             return new BomDto
             {
                 Id = bom.id,
                 Name = bom.name,
-                BomMaterial = BomMaterialMapper.ToDto(bomMaterial,materials)
+                BomMaterials = bomMaterials
             };
         }
 

@@ -19,6 +19,16 @@ namespace BusinessLogic.Mappers
                 Description = stage.description
             };
         }
+        public static List<StageDto> ToDto(List<Stage> stages)
+        {
+            List<StageDto> dtos = new List<StageDto>();
+            foreach (Stage stage in stages)
+            {
+                dtos.Add(ToDto(stage));
+            }
+            return dtos;
+
+        }
 
         public static Stage FromDto(StageDto dto)
         {
@@ -28,6 +38,16 @@ namespace BusinessLogic.Mappers
                 name = dto.Name,
                 description = dto.Description
             };
+        }
+
+        public static List<Stage> FromDto(List<StageDto> dtos)
+        {
+            List<Stage> stages = new List<Stage>();
+            foreach (StageDto dto in dtos)
+            {
+                stages.Add(FromDto(dto));
+            }
+            return stages;
         }
 
     }

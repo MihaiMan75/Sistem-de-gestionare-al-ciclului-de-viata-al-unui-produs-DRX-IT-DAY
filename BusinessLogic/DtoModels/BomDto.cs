@@ -10,6 +10,6 @@ namespace BusinessLogic.DtoModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public BomMaterialDto BomMaterial { get; set; }
+        public List<BomMaterialDto> BomMaterials { get; set; } = new List<BomMaterialDto>();
     }
 }

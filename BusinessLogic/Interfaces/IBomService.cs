@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Interfaces
 {
-    public interface IBomSerivce
+    public interface IBomService
     {
         Task<IEnumerable<BomDto>> GetAllBomsAsync();
         Task<BomDto> GetBomByIdAsync(int id);

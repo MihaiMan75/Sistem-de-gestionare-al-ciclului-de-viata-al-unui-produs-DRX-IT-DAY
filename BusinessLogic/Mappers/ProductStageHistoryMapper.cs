@@ -10,36 +10,46 @@ namespace BusinessLogic.Mappers
 {
     public static class ProductStageHistoryMapper
     {
-        public static ProductStageHistoryDto ToDto(ProductStageHistory productStageHistory, Stage stage)
+        public static ProductStageHistoryDto ToDto(ProductStageHistory productStageHistory, Stage stage, UserDto user)
         {
             return new ProductStageHistoryDto
             {
-                ProductStage = StageMapper.ToDto(stage), 
-                StartDate = productStageHistory.startOfStage,
-                EndDate = productStageHistory.endOfStage
+                ProductStage = StageMapper.ToDto(stage),
+                StartDate = productStageHistory.start_of_stage,
+                EndDate = productStageHistory.end_of_stage,
+                User = user
+
             };
         }
-        public static List<ProductStageHistoryDto> ToDto(List<ProductStageHistory> productStageHistories, Dictionary<int, Stage> stagesDict)
+        public static List<ProductStageHistoryDto> ToDto(List<ProductStageHistory> productStageHistories, List<Stage> stages,List<UserDto> users)
         {
-            return productStageHistories.Select(psh =>
+            var dtos = new List<ProductStageHistoryDto>();
+            for (int i = 0; i < productStageHistories.Count; i++)
             {
-                var stage = stagesDict.ContainsKey(psh.stageId) ? stagesDict[psh.stageId] : null;
-                return ToDto(psh, stage);
-            }).ToList();
+                dtos.Add(ToDto(productStageHistories[i], stages[i], users[i]));
+            }
+            return dtos;
         }
 
         public static ProductStageHistory FromDto(ProductStageHistoryDto dto)
         {
             return new ProductStageHistory
             {
-                stageId = dto.ProductStage.Id, 
-                startOfStage = dto.StartDate,
-                endOfStage = dto.EndDate
+                stage_id = dto.ProductStage.Id, 
+                start_of_stage = dto.StartDate,
+                end_of_stage = dto.EndDate,
+                id_user = dto.User.Id
+
             };
         }
         public static List<ProductStageHistory> FromDto(List<ProductStageHistoryDto> dtos)
         {
-            return dtos.Select(FromDto).ToList();
+            var productStageHistories = new List<ProductStageHistory>();
+            foreach (var dto in dtos)
+            {
+                productStageHistories.Add(FromDto(dto));
+            }
+            return productStageHistories;
         }
     }
 

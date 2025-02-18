@@ -15,7 +15,7 @@ namespace BusinessLogic.Mappers
             return new RoleDto
             {
                 Id = role.id,
-                RoleName = role.roleName
+                RoleName = role.role_name
             };
         }
         public static List<RoleDto> ToDto(List<Role> roles)
@@ -34,7 +34,7 @@ namespace BusinessLogic.Mappers
             return new Role
             {
                 id = dto.Id,
-                roleName = dto.RoleName
+                role_name = dto.RoleName
             };
         }
 

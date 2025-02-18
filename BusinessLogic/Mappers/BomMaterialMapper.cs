@@ -8,28 +8,41 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Mappers
 {
-    static class BomMaterialMapper
+    static class BomMaterialMapper // 1 material to 1 bom
     {
-        public static BomMaterialDto ToDto(BomMaterial bomMaterial, List<Material> materials)
+        public static BomMaterialDto ToDto(BomMaterial bomMaterial, Material material)
         {
             return new BomMaterialDto
             {
-                BomId = bomMaterial.bomId,
+                BomId = bomMaterial.bom_id,
                 Quantity = bomMaterial.qty,
-                UnitMeasureCode = bomMaterial.unitMeasureCode,
-                Materials = MaterialMapper.ToDto(materials)
+                UnitMeasureCode = bomMaterial.unit_measure_code,
+                Material = MaterialMapper.ToDto(material)
             };
         }
+        
+        public static List<BomMaterialDto> ToDto(List<BomMaterial> bomMaterials, List<Material> materials)
+        {
+            List<BomMaterialDto> dtos = new List<BomMaterialDto>();
+            for (int i = 0; i < bomMaterials.Count; i++)
+            {
+                dtos.Add(ToDto(bomMaterials[i], materials[i]));
+            }
+            return dtos;
+        }
+
+        
 
         public static BomMaterial FromDto(BomMaterialDto dto)
         {
             
             return new BomMaterial
             {
-                bomId = dto.BomId,
+                bom_id = dto.BomId,
                 qty = dto.Quantity,
-                unitMeasureCode = dto.UnitMeasureCode
+                unit_measure_code = dto.UnitMeasureCode
             };
         }
+
     }
 }

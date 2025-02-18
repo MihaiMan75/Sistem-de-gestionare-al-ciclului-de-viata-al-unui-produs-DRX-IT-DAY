@@ -11,5 +11,6 @@ namespace BusinessLogic.DtoModels
         public StageDto ProductStage { get; set; }
          public DateTime StartDate { get; set; }
          public DateTime EndDate { get; set; }
+        public UserDto User { get; set; }
     }
 }
