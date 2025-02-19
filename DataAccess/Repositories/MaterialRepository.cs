@@ -20,17 +20,25 @@ namespace DataAccess.Repositories
         public override async Task<int> AddAsync(Material entity)
         {
             using (var connection = _context.CreateConnection())
-            { // de folosit tabelename in insert in loc de text simplu
-                const string sql = @"
-        INSERT INTO materials 
-            (material_number, material_description, height, width, weight)
+            { 
+                 string sql = $@"
+        INSERT INTO {TableName} 
+            (
+             material_description,  
+             weight, 
+             width,     
+             height)
         OUTPUT INSERTED.material_number
         VALUES 
-            (@material_number, @material_description, @height, @width, @weight);";
+            (
+             @material_description,
+             @height,
+             @width, 
+             @weight);";
 
                 return await connection.QuerySingleAsync<int>(sql, new
                 {
-                    entity.material_number,
+                    
                     entity.material_description,
                     entity.height,
                     entity.width,
@@ -42,11 +50,10 @@ namespace DataAccess.Repositories
         public override async Task<bool> UpdateAsync(Material entity)
         {
             using (var connection = _context.CreateConnection())
-            {// de folosit tabelename in insert in loc de text simplu
-                const string sql = @"
-                UPDATE materials 
+            {
+                string sql = $@"
+                UPDATE {TableName}
                 SET 
-                    material_description = @material_description,
                     height = @height,
                     width = @width,
                     weight = @weight
@@ -66,25 +73,56 @@ namespace DataAccess.Repositories
 
         }
 
-        public override async Task<Material> GetByIdAsync(int id)
+        public override async Task<Material> GetByIdAsync(int material_number)
         {
             using (var connection = _context.CreateConnection())
             {
                 return await connection.QuerySingleOrDefaultAsync<Material>(
-                    $"SELECT * FROM {TableName} WHERE material_number = @Id",
-                    new { Id = id }
+                    $"SELECT * FROM {TableName} WHERE material_number = @material_number",
+                    new { material_number }
                 );
             }
         }
 
-        public override async Task<bool> DeleteAsync(int id)
+        public override async Task<bool> DeleteAsync(int material_number)
         {
             using (var connection = _context.CreateConnection())
             {
                 return await connection.ExecuteAsync(
-                    $"DELETE FROM {TableName} WHERE material_number = @Id",
-                    new { Id = id }
+                    $"DELETE FROM {TableName} WHERE material_number = @material_number",
+                    new { material_number}
                     ) > 0;
+            }
+        }
+
+        public override async Task<IEnumerable<Material>> GetWithPaginationAsync(int pageNumber, int pageSize) 
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                return await connection.QueryAsync<Material>(
+                    $@"SELECT *
+                      FROM {TableName}
+                      ORDER BY material_number
+                      OFFSET (@PageNumber - 1) * @PageSize ROWS
+                      FETCH NEXT @PageSize ROWS ONLY",
+                    new
+                    {
+                        PageNumber = pageNumber,
+                        PageSize = pageSize
+                    }
+                );
+            }
+        }
+
+        public override async Task<bool> ExistsAsync(int material_number)
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                var count = await connection.ExecuteScalarAsync<int>(
+                    $"SELECT COUNT(1) FROM {TableName} WHERE material_number = @material_number",
+                    new { material_number}
+                );
+                return count > 0;
             }
         }
     }

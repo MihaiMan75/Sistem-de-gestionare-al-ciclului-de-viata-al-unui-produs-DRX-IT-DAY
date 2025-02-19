@@ -27,8 +27,8 @@ namespace DataAccess.Repositories
                 using (var connection = _context.CreateConnection())
                 {
                     return await connection.ExecuteAsync(
-                        $"DELETE FROM {TableName} WHERE Id = @Id",
-                        new { Id = id }
+                        $"DELETE FROM {TableName} WHERE id = @id",
+                        new { id }
                         ) > 0;
                 }
             }
@@ -48,8 +48,8 @@ namespace DataAccess.Repositories
                 using (var connection = _context.CreateConnection())
                 {
                     return await connection.QuerySingleOrDefaultAsync<T>(
-                        $"SELECT * FROM {TableName} WHERE Id = @Id",
-                        new { Id = id }
+                        $"SELECT * FROM {TableName} WHERE id = @id",
+                        new { id }
                     );
                 }
             }
@@ -61,7 +61,7 @@ namespace DataAccess.Repositories
                     return await connection.QueryAsync<T>(
                         $@"SELECT *
                       FROM {TableName}
-                      ORDER BY Id
+                      ORDER BY id
                       OFFSET (@PageNumber - 1) * @PageSize ROWS
                       FETCH NEXT @PageSize ROWS ONLY",
                         new
@@ -72,7 +72,18 @@ namespace DataAccess.Repositories
                     );
                 }
             }
-        }
+            public virtual async Task<bool> ExistsAsync(int id)
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var count = await connection.ExecuteScalarAsync<int>(
+                        $"SELECT COUNT(1) FROM {TableName} WHERE id = @id",
+                        new { id }
+                    );
+                    return count > 0;
+                }
+            }
+    }
 
     
 }

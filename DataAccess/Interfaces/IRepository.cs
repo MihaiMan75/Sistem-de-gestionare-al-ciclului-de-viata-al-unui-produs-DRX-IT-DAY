@@ -14,6 +14,7 @@ namespace DataAccess.Interfaces
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);
         Task<IEnumerable<T>> GetWithPaginationAsync(int pageNumber, int pageSize);
+        Task<bool> ExistsAsync(int id);
     }
 
 }

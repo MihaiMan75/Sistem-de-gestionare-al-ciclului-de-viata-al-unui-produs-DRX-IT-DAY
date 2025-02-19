@@ -8,7 +8,7 @@ namespace DataAccess.Models
 {
     public class ProductStageHistory
     {
-        public int prduct_id{  get; set; }
+        public int product_id{  get; set; }
         public int stage_id { get; set; }
         public DateTime start_of_stage { get; set; }
         public DateTime end_of_stage { get; set; }
