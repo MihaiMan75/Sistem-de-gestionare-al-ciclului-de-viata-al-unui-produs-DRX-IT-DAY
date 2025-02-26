@@ -27,7 +27,7 @@ namespace DataAccess.Repositories
              name,  
              PasswordHashed,
              phone_number)
-        OUTPUT INSERTED id
+        OUTPUT INSERTED.id_user
         VALUES 
             (@email, 
              @name,

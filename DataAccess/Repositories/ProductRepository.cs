@@ -30,7 +30,7 @@ namespace DataAccess.Repositories
                       estimated_width,  
                       estimated_weight,
                       name)
-        OUTPUT INSERTED id
+        OUTPUT INSERTED.id
         VALUES 
              (
               @bom_id,

@@ -24,7 +24,7 @@ namespace DataAccess.Repositories
                 string sql = $@"
         INSERT INTO {TableName} 
             (id_user, role_id)
-        OUTPUT INSERTED id
+        OUTPUT INSERTED.id_user
         VALUES 
             (@id_user, @role_id);";
 
@@ -67,6 +67,22 @@ namespace DataAccess.Repositories
                 );
             }
         }
+
+        public async Task<bool> DeleteAsync(int id_user, int role_id)
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                return await connection.ExecuteAsync(
+                    $"DELETE FROM {TableName} WHERE id_user = @id_user AND role_id = @role_id",
+                    new
+                    {
+                        id_user,
+                        role_id
+                    }
+                    ) > 0;
+            }
+        }
+
 
         public override async Task<IEnumerable<UserRoles>> GetWithPaginationAsync(int pageNumber, int pageSize) 
         {

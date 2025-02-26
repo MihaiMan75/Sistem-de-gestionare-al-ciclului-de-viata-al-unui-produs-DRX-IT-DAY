@@ -24,7 +24,7 @@ namespace DataAccess.Repositories
                 string sql = $@"
         INSERT INTO {TableName} 
             (id, role_name)
-        OUTPUT INSERTED id
+        OUTPUT INSERTED.id
         VALUES 
             (@id, @role_name);";
 

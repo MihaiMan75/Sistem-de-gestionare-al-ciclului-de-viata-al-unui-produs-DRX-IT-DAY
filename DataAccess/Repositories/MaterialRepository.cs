@@ -56,6 +56,7 @@ namespace DataAccess.Repositories
                 SET 
                     height = @height,
                     width = @width,
+                    material_description = @material_description,
                     weight = @weight
                 WHERE material_number = @material_number";
 

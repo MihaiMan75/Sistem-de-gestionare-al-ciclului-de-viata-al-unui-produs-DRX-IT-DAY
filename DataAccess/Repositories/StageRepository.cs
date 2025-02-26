@@ -27,7 +27,7 @@ namespace DataAccess.Repositories
             (id,
              name,
              description)
-        OUTPUT INSERTED id
+        OUTPUT INSERTED.id
         VALUES 
             (@id,
              @name, 

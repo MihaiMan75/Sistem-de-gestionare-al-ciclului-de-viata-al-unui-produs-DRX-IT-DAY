@@ -20,27 +20,19 @@ namespace DataAccess.Repositories
         public override async Task<int> AddAsync(BomMaterial entity)
         {
             using (var connection = _context.CreateConnection())
-            { 
+            {
                 string sql = $@"
-        INSERT INTO {TableName} 
-            (material_number,
-             bom_id,
-             qty,
-             unit_measure_code)
-        OUTPUT INSERTED.material_number 
-        VALUES 
-            (@material_number,
-             @bom_id,  
-             @qty,
-             @unit_measure_code);";
+                    INSERT INTO {TableName} 
+                        (material_number, bom_id, qty, unit_measure_code)
+                    VALUES 
+                        (@material_number, @bom_id, @qty, @unit_measure_code);";
 
-
-                return await connection.QuerySingleAsync<int>(sql, new
+                return await connection.ExecuteAsync(sql, new
                 {
-                    entity.bom_id,
                     entity.material_number,
+                    entity.bom_id,
                     entity.qty,
-                    entity.unit_measure_code,
+                    entity.unit_measure_code
                 });
             }
         }
@@ -131,7 +123,7 @@ namespace DataAccess.Repositories
                 string sql = @"
             SELECT m.*
             FROM materials m
-            INNER JOIN bom_material b ON m.material_number = b.material_number
+            INNER JOIN bom_materials b ON m.material_number = b.material_number
             WHERE b.bom_id = @bom_id";
 
                 var materials = await connection.QueryAsync<Material>(sql, new { bom_id });
