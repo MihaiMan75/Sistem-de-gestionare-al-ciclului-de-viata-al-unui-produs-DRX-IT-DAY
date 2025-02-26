@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.Data.SqlClient;
 
 namespace DataAccess.Repositories
 {
@@ -34,14 +35,21 @@ namespace DataAccess.Repositories
              @PasswordHashed,
              @phone_number);";
 
-                return await connection.QuerySingleAsync<int>(sql, new
+                try
                 {
-                    entity.email,
-                    entity.name,
-                    entity.PasswordHashed,
-                    entity.phone_number
-
-                });
+                    return await connection.QuerySingleAsync<int>(sql, new
+                    {
+                        entity.email,
+                        entity.name,
+                        entity.PasswordHashed,
+                        entity.phone_number
+                    });
+                }
+                catch (SqlException ex) when (ex.Number == 2627) // Error code for UNIQUE constraint violation
+                {
+                   
+                    return -1;
+                }
             }
         }
 
@@ -121,6 +129,19 @@ namespace DataAccess.Repositories
                 );
                 return count > 0;
             }
+
         }
+
+        public Task<User> GetUserByUserNameAsync(string name)
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                return connection.QuerySingleOrDefaultAsync<User>(
+                    $"SELECT * FROM {TableName} WHERE name = @name",
+                    new { name }
+                );
+            }
+        }
+
     }
 }
