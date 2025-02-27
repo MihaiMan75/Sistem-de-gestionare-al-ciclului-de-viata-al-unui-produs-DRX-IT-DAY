@@ -16,8 +16,8 @@ namespace BusinessLogic.Services
     public class UserService : IUserService
     {
         private readonly IRepositoryFactory _repositoryFactory;
-        private readonly IRepository<User> _userRepository;
-        private readonly IRepository<UserRoles> _userRoleReposiotory;
+        private readonly UserRepository _userRepository;
+        private readonly UserRolesRepository _userRoleReposiotory;
 
         public UserService(IRepositoryFactory repositoryFactory)
         {
@@ -30,6 +30,9 @@ namespace BusinessLogic.Services
         public async Task<int> CreateUserAsync(UserDto userDto)
         {
             await Validate(userDto);
+           
+            var user = UserMaper.FromDto(userDto);
+            userDto.Id = await _userRepository.AddAsync(user);
             //link the user to the roles
             foreach (RoleDto roleDto in userDto.Roles)
             {
@@ -38,8 +41,7 @@ namespace BusinessLogic.Services
                 userRoles.role_id = roleDto.Id;
                 await _userRoleReposiotory.AddAsync(userRoles);
             }
-            var user = UserMaper.FromDto(userDto);
-            return await _userRepository.AddAsync(user);
+            return userDto.Id;
         }
 
         public async Task<bool> DeleteUserAsync(int id)
@@ -53,8 +55,8 @@ namespace BusinessLogic.Services
             IEnumerable<UserDto> result = new List<UserDto>();
             foreach (User user in users)
             {
-                var roles = await _userRoleReposiotory.GetAllRolesByUserId(user.id_user);
-                result.Append(UserMaper.ToDto(user, roles));
+                var roles = await _userRoleReposiotory.GetUserRolesAsync(user.id_user);
+               result = result.Append(UserMaper.ToDto(user, roles.ToList()));
             }
             return result;
         }
@@ -62,9 +64,15 @@ namespace BusinessLogic.Services
         public async Task<UserDto> GetUserByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            var roles = await _userRoleReposiotory.GetAllRolesByUserId(id);
-            return UserMaper.ToDto(user, roles);
+            var roles = await _userRoleReposiotory.GetUserRolesAsync(id);
+            if(user == null)
+            {
+                return null;
+            }
+            return UserMaper.ToDto(user, roles.ToList());
         }
+
+       
 
         public async Task<bool> UpdateUserAsync(UserDto userDto)
         {
@@ -72,13 +80,34 @@ namespace BusinessLogic.Services
             UserRoles userRoles = new UserRoles();
             userRoles.id_user = userDto.Id;
 
-            //update aslo user roles
+            //search for the roles that are not in the user roles and delete them
+            var existingRolesIds = await _userRoleReposiotory.GetUserRolesAsync(userDto.Id);
+            foreach (Role role in existingRolesIds)
+            {
+                if (userDto.Roles.Any(r => r.Id == role.id))
+                {
+                    continue;
+                }
+                await _userRoleReposiotory.DeleteAsync(userDto.Id, role.id);
+            }
+            //search for the roles that are in the user roles and add them
+            var existingRoles = await _userRoleReposiotory.GetUserRolesAsync(userDto.Id);
+            foreach (RoleDto roleDto in userDto.Roles)
+            {
+                if (existingRoles.Any(r => r.id== roleDto.Id))
+                {
+                    continue;
+                }
+                userRoles.role_id = roleDto.Id;
+                await _userRoleReposiotory.AddAsync(userRoles);
+            }
             foreach (RoleDto roleDto in userDto.Roles)
             {
                
                 userRoles.role_id = roleDto.Id;
                 await _userRoleReposiotory.UpdateAsync(userRoles);
             }
+
             var user = UserMaper.FromDto(userDto);
             return await _userRepository.UpdateAsync(user);
         }
@@ -88,15 +117,32 @@ namespace BusinessLogic.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (String.IsNullOrEmpty(user.Name) || String.IsNullOrEmpty(user.Email) || String.IsNullOrEmpty(user.PhoneNumber))
-                throw new Exception("User name, email and phone number are required");
+            if (String.IsNullOrEmpty(user.Name)|| String.IsNullOrEmpty(user.PasswordHashed)|| String.IsNullOrEmpty(user.Email) || user.PhoneNumber< 0)
+                throw new Exception("User name,password, email and phone number are required");
             
             if (user.Roles.Count == 0)
                 throw new Exception("User must have at least one role");
 
-            bool result = int.TryParse(user.PhoneNumber,out int i);
-            if (!result)
-                throw new Exception("Phone number must be a number");
+        }
+
+        public async Task<UserDto> GetUserByUserNameAsync(string userName)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByUserNameAsync(userName);
+                if (user == null)
+                {
+                    return null;
+                }
+                var roles = await _userRoleReposiotory.GetUserRolesAsync(user.id_user);
+                return UserMaper.ToDto(user, roles.ToList());
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+           
+          
         }
     }
 }

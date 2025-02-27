@@ -34,6 +34,12 @@ namespace BusinessLogic.Services
         public async Task<MaterialDto> GetMaterialByIdAsync(int id)
         {
             var material = await _materialRepository.GetByIdAsync(id);
+
+            if(material == null)
+            {
+                return null;
+            }
+
             return MaterialMapper.ToDto(material);
         }
 

@@ -46,6 +46,10 @@ namespace BusinessLogic.Services
         public async Task<StageDto> GetStageByIdAsync(int id)
         {
             var stage = await _stageRepository.GetByIdAsync(id);
+            if(stage == null)
+            {
+                return null;
+            }
             return StageMapper.ToDto(stage);
         }
 

@@ -16,7 +16,7 @@ namespace BusinessLogic.Services
     public class ProductStageHistoryService: IProductStageHistoryService
     {
         private readonly IRepositoryFactory _repositoryFactory;
-        private readonly IRepository<ProductStageHistory> _productStageHitoryRepository;
+        private readonly ProductStageHistoryRepository _productStageHitoryRepository;
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Stage> _stageRepository;
         private readonly IUserService _userService;
@@ -64,8 +64,8 @@ namespace BusinessLogic.Services
             var users = new List<UserDto>();
             foreach (var productStage in productStageHistories)
             {
-                stages.Add(await _stageRepository.GetByIdAsync(productStage.stageId));
-                users.Add(await _userService.GetUserByIdAsync(productStage.userId));
+                stages.Add(await _stageRepository.GetByIdAsync(productStage.stage_id));
+                users.Add(await _userService.GetUserByIdAsync(productStage.id_user));
             }
             return ProductStageHistoryMapper.ToDto(productStageHistories.ToList(), stages, users);
         }
@@ -94,9 +94,9 @@ namespace BusinessLogic.Services
             if (productStageHistory.EndDate < productStageHistory.StartDate)
                 throw new Exception(productStageHistory.EndDate + " must be greater than " + productStageHistory.StartDate);
 
-            if(!_userRepository.Exist(productStageHistory.User.Id))
+            if(! await _userRepository.ExistsAsync(productStageHistory.User.Id))
                 throw new Exception("User must Exist in the database");
-            if(productStageHistory.ProductStage == null && !_stageRepository.Exist(productStageHistory.ProductStage.Id))
+            if(productStageHistory.ProductStage == null && !await _stageRepository.ExistsAsync(productStageHistory.ProductStage.Id))
                 throw new Exception("Stage must Exist in the database");
         }
     }

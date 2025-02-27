@@ -46,6 +46,10 @@ namespace BusinessLogic.Services
         public async Task<RoleDto> GetRoleByIdAsync(int id)
         {
             var role = await _roleRepository.GetByIdAsync(id);
+            if (role == null)
+            {
+                return null;
+            }
             return RoleMapper.ToDto(role);
         }
 

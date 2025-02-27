@@ -14,5 +14,6 @@ namespace BusinessLogic.Interfaces
         Task<int> CreateUserAsync(UserDto user);
         Task<bool> UpdateUserAsync(UserDto user);
         Task<bool> DeleteUserAsync(int id);
+        Task<UserDto> GetUserByUserNameAsync(string userName);
     }
 }

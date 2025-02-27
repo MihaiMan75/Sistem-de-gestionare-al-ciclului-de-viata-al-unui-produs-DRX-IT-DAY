@@ -9,13 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessLogic.DtoModels;
 using BusinessLogic.Mappers;
+using DataAccess.Repositories;
 
 namespace BusinessLogic.Services
 {
     public class BomMaterialService : IBomMaterialService
     {
         private readonly IRepositoryFactory _repositoryFactory;
-        private readonly IRepository<BomMaterial> _bomMaterialRepository;
+        private readonly BomMaterialRepository _bomMaterialRepository;
         private readonly IRepository<Bom> _bomRepository;
         private readonly IRepository<Material> _materialRepository;
 
@@ -58,7 +59,11 @@ namespace BusinessLogic.Services
         {
             var material = await _materialRepository.GetByIdAsync(material_number);
             var bomMaterial = await _bomMaterialRepository.GetByIdAsync(boomId, material_number);
-            return MaterialMapper.ToDto(bomMaterial, material);
+            if (material == null || bomMaterial == null)
+            {
+                return null;
+            }
+            return BomMaterialMapper.ToDto(bomMaterial, material);
         }
 
         public async Task<List<BomMaterialDto>> GetMaterialsByBomIdAsync(int boomId) 
@@ -108,9 +113,9 @@ namespace BusinessLogic.Services
                 throw new ArgumentException("Bom Material Quantity cannot be less than 1");
 
             //if both bomId and material_number are exist in the db?
-            if (await !_materialRepository.Exist(bomMaterial.Material))
+            if (!await _materialRepository.ExistsAsync(bomMaterial.Material.MaterialNumber))
                 throw new ArgumentException("Material does not exist in the database");
-            if(await _bomRepository.Exist(bomMaterial.BomId))
+            if(!await _bomRepository.ExistsAsync(bomMaterial.BomId))
                 throw new ArgumentException("Bom does not exist in the database");
         }
     }

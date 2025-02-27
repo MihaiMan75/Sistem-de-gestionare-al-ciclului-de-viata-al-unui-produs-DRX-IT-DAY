@@ -63,6 +63,10 @@ namespace BusinessLogic.Services
         {
            var Bom = await _bomRepository.GetByIdAsync(id);
            var BomMaterials = await _bomMaterialService.GetMaterialsByBomIdAsync(id);
+            if (Bom == null || BomMaterials == null)
+            {
+                return null;
+            }
             return BomMapper.ToDto(Bom, BomMaterials);
 
         }

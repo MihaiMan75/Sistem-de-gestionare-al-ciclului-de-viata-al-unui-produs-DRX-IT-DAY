@@ -20,6 +20,7 @@ namespace BusinessLogic.Services
         private readonly IBomService _bomService;
         private readonly IProductStageHistoryService _productStageHistoryService;
 
+
         public ProductService(IRepositoryFactory repositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
@@ -32,7 +33,9 @@ namespace BusinessLogic.Services
         {
             await Validate(productDto);
 
-            await _bomService.CreateBomAsync(productDto.ProductBom);
+            //bom already created in the db?
+            //await _bomService.CreateBomAsync(productDto.ProductBom);
+
             foreach (var productStageHistory in productDto.StageHistory)
             {
                 await _productStageHistoryService.CreateProductStageHistoryAsync(productStageHistory);
@@ -62,11 +65,20 @@ namespace BusinessLogic.Services
         public async Task<ProductDto> GetProductByIdAsync(int id)
         {
            var product = await _productRepository.GetByIdAsync(id);
+
+            if (product == null)
+            {
+                return null;
+            }
             //bom
             //product stage history
             //Curentstage
             var bom = await _bomService.GetBomByIdAsync(product.bom_id); // also returns a DTO
-            var productStageHistory = await _productStageHistoryService.GetProductStageHistoriesByProductIdAsync(id); //returns list of product stage history DTOs                    
+            var productStageHistory = await _productStageHistoryService.GetProductStageHistoriesByProductIdAsync(id); //returns list of product stage history DTOs
+            if (bom == null || productStageHistory == null)
+            {
+                return null;
+            }
             return ProductMapper.ToDto(product, bom, productStageHistory);
 
         }
@@ -102,7 +114,7 @@ namespace BusinessLogic.Services
             return result;
         }
 
-        private async Task Validate(ProductDto product)
+        private async Task Validate(ProductDto product) 
         {
             if (product == null)
                 throw new ArgumentNullException(nameof(product), "Product cannot be null.");

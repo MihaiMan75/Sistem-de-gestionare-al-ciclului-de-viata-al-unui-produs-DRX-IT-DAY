@@ -40,6 +40,7 @@ namespace BusinessLogic.Mappers
             {
                 bom_id = dto.BomId,
                 qty = dto.Quantity,
+                material_number = dto.Material.MaterialNumber,
                 unit_measure_code = dto.UnitMeasureCode
             };
         }

@@ -17,7 +17,8 @@ namespace BusinessLogic.Mappers
                 Id = user.id_user,
                 Name = user.name,
                 Email = user.email,
-                PhoneNumber = user.phone_number,
+                PhoneNumber = int.TryParse(user.phone_number,out int phoneNumber) ? phoneNumber : 0,
+                PasswordHashed = user.PasswordHashed,
                 Roles = RoleMapper.ToDto(roles)
             };
         }
@@ -29,7 +30,8 @@ namespace BusinessLogic.Mappers
                 id_user = dto.Id,
                 name = dto.Name,
                 email = dto.Email,
-                phone_number = dto.PhoneNumber,
+                PasswordHashed = dto.PasswordHashed,
+                phone_number = dto.PhoneNumber.ToString(),
             };
         }
 

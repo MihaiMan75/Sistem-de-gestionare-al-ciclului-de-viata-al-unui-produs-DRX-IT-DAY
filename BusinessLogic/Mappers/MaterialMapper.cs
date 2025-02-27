@@ -12,6 +12,10 @@ namespace BusinessLogic.Mappers
     {
         public static MaterialDto ToDto(Material material)
         {
+            if (material == null)
+            {
+                throw new ArgumentNullException(nameof(material), "Material is null");
+            }
             return new MaterialDto
             {
                 MaterialNumber = material.material_number,
