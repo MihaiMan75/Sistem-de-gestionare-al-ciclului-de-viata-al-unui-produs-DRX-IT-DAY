@@ -10,7 +10,8 @@ namespace WPF_UI.Interfaces
 {
     public interface INavigationService
     {
-        void NavigateTo<T>() where T : BaseViewModel, new();
+        void NavigateToSimple<T>() where T : BaseViewModel, new();
+        void NavigateTo<T>() where T : BaseViewModel;
         //go back method
         //go foward?
     }

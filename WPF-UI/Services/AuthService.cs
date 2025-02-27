@@ -1,5 +1,13 @@
-﻿using System;
+﻿using BusinessLogic;
+using BusinessLogic.DtoModels;
+using BusinessLogic.Interfaces;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using DataAccess.Interfaces;
+using ProductManagementBusinessLogic.AuthUtils;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,24 +15,53 @@ using WPF_UI.Interfaces;
 
 namespace WPF_UI.Services
 {
-    public class AuthService : IAuthService
+    public partial class AuthService : ObservableObject, IAuthService
     {
-        //public User? CurrentUser { get; private set; }
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IServiceFactory _serviceFactory;
+        private readonly IUserService _userService;
 
-        public bool Login(string username, string password)
+
+        [ObservableProperty]
+        private UserDto _currentUser;
+
+        public AuthService(IServiceFactory serviceFactory)
         {
-                          //User Verification
-            if (username == "admin" && password == "password")
+            _passwordHasher = new PasswordHasher();
+            _serviceFactory = serviceFactory;
+            _userService = _serviceFactory.GetUserService();
+        }
+
+        public async Task<bool> Login(string username, string password)
+        {
+            var user = await _userService.GetUserByUserNameAsync(username);
+            if (user != null)
             {
-               // CurrentUser = new User { Username = username };
-                return true;
+                if (VerifyPassword(password, user.PasswordHashed))
+                {
+                    CurrentUser = user;
+                    return true;
+                }
             }
             return false;
         }
 
+        partial void OnCurrentUserChanged(UserDto value)
+        {
+            
+        }
+
+        public bool VerifyPassword(string password, string hashedPassword)
+        {
+           return _passwordHasher.VerifyPassword(password, hashedPassword);
+        }
+
+        [RelayCommand]
         public void Logout()
         {
-         //   CurrentUser = null;
+            CurrentUser = null;
         }
+
+
     }
 }

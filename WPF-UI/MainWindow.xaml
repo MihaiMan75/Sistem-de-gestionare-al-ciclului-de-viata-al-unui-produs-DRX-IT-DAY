@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_UI"
         mc:Ignorable="d"
-        Title="Sistem De Gestionare a Ciclului de Viata a unui Produs" Height="450" Width="800 "
+        Title="Sistem De Gestionare a Ciclului de Viata a unui Produs" Height="500" Width="800 "
         xmlns:UserControls="clr-namespace:WPF_UI.UserControls"
         xmlns:Views="clr-namespace:WPF_UI.Views"
         xmlns:ViewModels="clr-namespace:WPF_UI.ViewModels"

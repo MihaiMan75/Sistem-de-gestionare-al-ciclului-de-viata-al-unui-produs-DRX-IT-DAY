@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPF_UI.Views" xmlns:usercontrols="clr-namespace:WPF_UI.UserControls"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="550" d:DesignWidth="800"
       Title="User_Management_Page">
 
     <Grid Margin="20">
@@ -71,74 +71,82 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Edit" 
+                                      Command="{Binding DataContext.EditCommand, 
+                                      RelativeSource={RelativeSource AncestorType=Page}}"
+                                      CommandParameter="{Binding}"
+                                      Margin="2"/>
+                                                    <Button Content="Delete" 
+                                      Command="{Binding DataContext.DeleteCommand, 
+                                      RelativeSource={RelativeSource AncestorType=Page}}"
+                                      CommandParameter="{Binding}"
+                                      Margin="2"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-
-                <!-- Add User Button -->
-                <Button Grid.Row="2"
-                        Content="Add New User"
-                        Command="{Binding AddNewUserCommand}"
-                        HorizontalAlignment="Left"
-                        Margin="5"
-                        Width="120"
-                        Height="30"/>
             </Grid>
         </GroupBox>
 
         <!-- Right side - User Details -->
         <GroupBox Header="User Details" Grid.Column="1">
-            <StackPanel Margin="10">
-                <TextBlock Text="Name:"/>
-                <TextBox Text="{Binding CurrentUser.Name, UpdateSourceTrigger=PropertyChanged}"
+            <ScrollViewer>
+                <StackPanel Margin="10">
+                    <TextBlock Text="Name:"/>
+                    <TextBox Text="{Binding CurrentUser.Name, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="Email:"/>
-                <TextBox Text="{Binding CurrentUser.Email, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Email:"/>
+                    <TextBox Text="{Binding CurrentUser.Email, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="Phone Number:"/>
-                <TextBox Text="{Binding CurrentUser.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Phone Number:"/>
+                    <TextBox Text="{Binding CurrentUser.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="Roles:" Margin="0,10,0,5"/>
-                <ItemsControl ItemsSource="{Binding AvailableRoles}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <CheckBox Content="{Binding RoleName}"
-                                      IsChecked="{Binding IsSelected}"
-                                      Margin="0,5"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    <TextBlock Text="Roles:" Margin="0,10,0,5"/>
+                    <ScrollViewer Height="100">
+                        <ItemsControl ItemsSource="{Binding AvailableRoles}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding Role.RoleName}"
+                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                      Margin="0,5"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
 
-                <GroupBox Header="Password" Margin="0,20,0,0">
-                    <StackPanel Margin="5">
-                        <TextBlock Text="New Password:"/>
-                        <PasswordBox x:Name="PasswordBox"
+
+                    <GroupBox Header="Password" Margin="0,20,0,0">
+                        <StackPanel Margin="5">
+                            <TextBlock Text="New Password:"/>
+                            <TextBox x:Name="PasswordTextBox"
+                                     Text="{Binding CurrentUser.PasswordHashed}"
                                    Margin="0,5,0,10"/>
 
-                        <TextBlock Text="Confirm Password:"/>
-                        <PasswordBox x:Name="ConfirmPasswordBox"
-                                   Margin="0,5,0,10"/>
-                    </StackPanel>
-                </GroupBox>
+                        </StackPanel>
+                    </GroupBox>
 
-                <StackPanel Orientation="Horizontal" 
+                    <StackPanel Orientation="Horizontal" 
                           HorizontalAlignment="Right" 
                           Margin="0,20,0,0">
-                    <Button Content="Delete User"
-                            Command="{Binding DeleteUserCommand}"
-                            Width="100"
-                            Margin="0,0,10,0"/>
-                    <Button Content="Cancel"
+                        <Button Content="Cancel"
                             Command="{Binding CancelCommand}"
                             Width="100"
                             Margin="0,0,10,0"/>
-                    <Button Content="Save"
+                        <Button Content="Save"
                             Command="{Binding SaveCommand}"
-                            Width="100"/>
+                        Width="100"/>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </ScrollViewer>
         </GroupBox>
     </Grid>
 </Page>

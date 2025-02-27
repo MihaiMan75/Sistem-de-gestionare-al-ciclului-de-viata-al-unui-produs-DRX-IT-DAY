@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessLogic.DtoModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,10 @@ namespace WPF_UI.Interfaces
 {
     public interface IAuthService
     {
-       // User? CurrentUser { get; }
-        bool Login(string username, string password);
+        UserDto CurrentUser { get; }
+       // event EventHandler<UserDto> CurrentUserChanged;
+        Task<bool> Login(string username, string password);
+        bool VerifyPassword(string password, string hashedPassword);
         void Logout();
     }
 }

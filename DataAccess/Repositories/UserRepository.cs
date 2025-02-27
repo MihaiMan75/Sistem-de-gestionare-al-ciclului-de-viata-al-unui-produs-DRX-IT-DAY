@@ -132,11 +132,11 @@ namespace DataAccess.Repositories
 
         }
 
-        public Task<User> GetUserByUserNameAsync(string name)
+        public async Task<User> GetUserByUserNameAsync(string name)
         {
             using (var connection = _context.CreateConnection())
             {
-                return connection.QuerySingleOrDefaultAsync<User>(
+                return  await connection.QuerySingleOrDefaultAsync<User>(
                     $"SELECT * FROM {TableName} WHERE name = @name",
                     new { name }
                 );

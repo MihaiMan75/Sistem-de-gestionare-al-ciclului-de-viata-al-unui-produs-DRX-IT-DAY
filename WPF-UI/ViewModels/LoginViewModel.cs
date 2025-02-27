@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows;
 using WPF_UI.Interfaces;
 using WPF_UI.Services;
+using BusinessLogic.Interfaces;
 
 namespace WPF_UI.ViewModels
 {
@@ -18,6 +19,7 @@ namespace WPF_UI.ViewModels
     {
         private readonly IAuthService _authService;
         private readonly INavigationService _navigationService;
+        private readonly IServiceFactory _serviceFactory;
 
         [ObservableProperty]
         private string username;
@@ -25,19 +27,20 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private string password;
 
-        public LoginViewModel(INavigationService navigationService)
+        public LoginViewModel(INavigationService navigationService, IAuthService authService )
         {
-            _authService = new AuthService();
+            _authService = authService;
             _navigationService = navigationService;
         }
 
         [RelayCommand]
-        public void Login()
+        public async Task Login()
         {
             MessageBox.Show($"{Username} , {Password}");
-            if (_authService.Login(Username, Password) || true)// Delete TRUE after Implemeting Proper Navigation
+            if (await _authService.Login(Username, Password))// Delete TRUE after Implemeting Proper Navigation
             {
                 //navigate to the next page
+
                 _navigationService.NavigateTo<UserDashboardViewModel>();
 
             }

@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BusinessLogic.DtoModels;
+using BusinessLogic.Interfaces;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
@@ -15,20 +17,23 @@ namespace WPF_UI.ViewModels
     {
         private readonly NavigationStore _navigationStore;
         private readonly INavigationService _navigationService;
+        private readonly IServiceFactory _serviceFactory;
+        private readonly IAuthService _authService;
 
         [ObservableProperty]
         private BaseViewModel _currentViewModel;
 
-        public RelayCommand NavigateToLoginCommand { get; }
-        public RelayCommand NavigateToTestCommand { get; }
-        
 
-        public MainWindowViewModel(NavigationStore NavigationStore)
+
+
+        public MainWindowViewModel(NavigationStore NavigationStore,IServiceFactory serviceFactory)
         {
+            _serviceFactory = serviceFactory;
+            _authService = new AuthService(serviceFactory);
             _navigationStore = NavigationStore;
-            _navigationService = new NavigationService(_navigationStore);
             _navigationStore.PropertyChanged += OnCurrentViewModelChanged;
             CurrentViewModel = _navigationStore.CurrentViewModel;
+            _navigationService = new NavigationService(_navigationStore,_serviceFactory, _authService);
 
         }
         private void OnCurrentViewModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

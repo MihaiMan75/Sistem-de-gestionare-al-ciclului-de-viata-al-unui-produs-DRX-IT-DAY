@@ -12,12 +12,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
+using WPF_UI.Interfaces;
 
 namespace WPF_UI.ViewModels
 {
     public partial class MaterialManagementViewModel :BaseViewModel
     {
         private readonly IMaterialsService _materialService;
+        private readonly IServiceFactory _serviceFactory;
+        private readonly IAuthService _authService;
 
         [ObservableProperty]
         private ObservableCollection<MaterialDto> _materials;
@@ -31,16 +34,12 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private string _searchText;
 
-        public MaterialManagementViewModel()
+        public MaterialManagementViewModel(IServiceFactory serviceFactory, IAuthService authService)
         {
-            ////delete later
-            //string connectionString = "";
-            //DbContext dbContext = new DbContext(connectionString);
-            //RepositoryFactory repositoryFactory=new RepositoryFactory(dbContext);
-            //_materialService = new MaterialsService(repositoryFactory);
-            ////delete later
-            //_materialService = materialService;
-            LoadMaterials();
+            _serviceFactory = serviceFactory;
+            _materialService = _serviceFactory.GetMaterialsService();
+            _authService = authService;
+            LoadMaterialsCommand.Execute(null);
             CurrentMaterial = new MaterialDto();
         }
 
@@ -87,21 +86,23 @@ namespace WPF_UI.ViewModels
         {
             try
             {
-                var existingMaterial = await _materialService.GetMaterialByIdAsync(CurrentMaterial.MaterialNumber);
-                if (existingMaterial != null)
-                {
+              var existingMaterial = await _materialService.GetMaterialByIdAsync(CurrentMaterial.MaterialNumber);
+
+                if(existingMaterial != null)
+                { 
                     existingMaterial.MaterialNumber = CurrentMaterial.MaterialNumber;
                     existingMaterial.MaterialDescription = CurrentMaterial.MaterialDescription;
                     existingMaterial.Weight = CurrentMaterial.Weight;
                     existingMaterial.Height = CurrentMaterial.Height;
                     existingMaterial.Width = CurrentMaterial.Width;
                     await _materialService.UpdateMaterialAsync(existingMaterial);
+
                 }
                 else
                 {
                     await _materialService.CreateMaterialAsync(CurrentMaterial);
                 }
-
+                
                 await LoadMaterials();
                 ResetForm();
             }
