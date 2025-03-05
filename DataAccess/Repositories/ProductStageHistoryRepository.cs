@@ -157,7 +157,29 @@ namespace DataAccess.Repositories
                
             }
         }
-       
+
+        public async Task<IEnumerable<(int StageId, int ProductCount)>> GetCurrentProductCountPerStageAsync()
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                string query = @"
+            WITH LatestStages AS (
+                SELECT stage_id, product_id,
+                       ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY start_of_stage DESC) AS rn
+                FROM product_stage_history
+            )
+            SELECT stage_id, COUNT(product_id) AS ProductCount
+            FROM LatestStages
+            WHERE rn = 1
+            GROUP BY stage_id
+            ORDER BY stage_id";
+
+                var result = await connection.QueryAsync<(int StageId, int ProductCount)>(query);
+                return result;
+            }
+        }
+
+
     }
 }
 
