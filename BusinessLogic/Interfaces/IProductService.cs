@@ -14,6 +14,7 @@ namespace BusinessLogic.Interfaces
         Task<int> CreateProductAsync(ProductDto product);
         Task<bool> UpdateProductAsync(ProductDto product);
         Task<bool> DeleteProductAsync(int id);
+        Task<bool> AddProductStageAsync(ProductDto product, ProductStageHistoryDto newStage);
         Task<IEnumerable<ProductDto>> GetProductsWithPaginationAsync(int pageNumber, int pageSize);
     }
 }

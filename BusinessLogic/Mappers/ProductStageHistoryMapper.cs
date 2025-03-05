@@ -31,23 +31,24 @@ namespace BusinessLogic.Mappers
             return dtos;
         }
 
-        public static ProductStageHistory FromDto(ProductStageHistoryDto dto)
+        public static ProductStageHistory FromDto(ProductStageHistoryDto dto,int productId)
         {
             return new ProductStageHistory
             {
+                product_id = productId,
                 stage_id = dto.ProductStage.Id, 
                 start_of_stage = dto.StartDate,
-                end_of_stage = dto.EndDate,
+                end_of_stage = (DateTime)dto.EndDate,
                 id_user = dto.User.Id
 
             };
         }
-        public static List<ProductStageHistory> FromDto(List<ProductStageHistoryDto> dtos)
+        public static List<ProductStageHistory> FromDto(List<ProductStageHistoryDto> dtos,List<int> prodcutIDs)
         {
             var productStageHistories = new List<ProductStageHistory>();
-            foreach (var dto in dtos)
+            for(int i = 0; i < dtos.Count; i++)
             {
-                productStageHistories.Add(FromDto(dto));
+                productStageHistories.Add(FromDto(dtos[i], prodcutIDs[i]));
             }
             return productStageHistories;
         }

@@ -14,7 +14,7 @@ namespace WPF_UI.ViewModels
     public class TestPageViewModel : BaseViewModel
     {
         private readonly IServiceFactory _serviceFactory;
-        public TestPageViewModel(IServiceFactory serviceFactory, IAuthService authService)
+        public TestPageViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
         }

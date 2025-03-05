@@ -3,6 +3,7 @@ using BusinessLogic.Interfaces;
 using BusinessLogic.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using DataAccess.Models;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using WPF_UI.Interfaces;
+using WPF_UI.Messages;
 
 namespace WPF_UI.ViewModels
 {
-    public partial class BOMManagementViewModel:BaseViewModel
+    public partial class BOMManagementViewModel:BaseViewModel, IRecipient<BomSelectedMessage>
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IBomService _bomService;
         private readonly IBomMaterialService _bomMaterialService;
         private readonly IMaterialsService _materialService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private ObservableCollection<BomMaterialDto> _bOMMaterials;
@@ -55,16 +58,18 @@ namespace WPF_UI.ViewModels
 
 
 
-        public BOMManagementViewModel(IServiceFactory serviceFactory,IAuthService authService)
+        public BOMManagementViewModel(IServiceFactory serviceFactory,IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
             _bomService = _serviceFactory.GetBomService();
             _bomMaterialService = _serviceFactory.GetBomMaterialService();
             _materialService = _serviceFactory.GetMaterialsService();
+            WeakReferenceMessenger.Default.Register<BomSelectedMessage>(this);
             LoadMaterialsCommand.Execute(null);
             BOMMaterials = new ObservableCollection<BomMaterialDto>();
             UnitMeasures = new ObservableCollection<int> { 1, 2, 3, 4, 5 }; // Added values to the collection
             CurrentBOM = new BomDto();
+            _navigationService = navigationService;
         }
 
         [RelayCommand]
@@ -116,6 +121,7 @@ namespace WPF_UI.ViewModels
 
             try
             {
+                
                 if (string.IsNullOrWhiteSpace(CurrentBOM.Name))
                 {
 
@@ -129,14 +135,40 @@ namespace WPF_UI.ViewModels
                     throw new Exception("Please add at least one material");
                 }
 
-                CurrentBOM.BomMaterials = BOMMaterials.ToList();
+                var existingBOM = await _bomService.GetBomByIdAsync(CurrentBOM.Id);
+                if (existingBOM != null)
+                { //update
+                    existingBOM.Name = CurrentBOM.Name;
+                    existingBOM.BomMaterials = BOMMaterials.ToList();
+                    foreach (var bomMaterial in existingBOM.BomMaterials)
+                    {
+                        bomMaterial.BomId = existingBOM.Id;
+                    }
+                    //await _bomService.UpdateBomAsync(existingBOM);
+                    WeakReferenceMessenger.Default.Send(new BomSelectedMessage(CurrentBOM));
 
-                var bomId = await _bomService.CreateBomAsync(CurrentBOM);
+                    _navigationService.NavigateBack();
 
-                CurrentBOM = new BomDto();
-                BOMMaterials.Clear();
+                }
+                else
+                {
+                    CurrentBOM.BomMaterials = BOMMaterials.ToList();
 
-                MessageBox.Show("BOM saved successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //We save the BOM in productService to only
+                   // var bomId = await _bomService.CreateBomAsync(CurrentBOM);
+                   // CurrentBOM.Id = bomId;
+
+                    // Send message to update the ProductManagementViewModel
+                    WeakReferenceMessenger.Default.Send(new BomSelectedMessage(CurrentBOM));
+
+                    _navigationService.NavigateBack();
+                }
+
+               // CurrentBOM = new BomDto();
+              //  BOMMaterials.Clear();
+
+
+                //MessageBox.Show("BOM saved successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -160,6 +192,12 @@ namespace WPF_UI.ViewModels
             SelectedMaterial = null;
             QuantityToAdd = 0;
             UnitMeasureToAdd = string.Empty;
+        }
+
+        public void Receive(BomSelectedMessage message)
+        {
+            CurrentBOM = message.Value;
+            BOMMaterials = new ObservableCollection<BomMaterialDto>(CurrentBOM.BomMaterials);
         }
     }
 }

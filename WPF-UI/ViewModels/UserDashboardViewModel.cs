@@ -11,7 +11,7 @@ namespace WPF_UI.ViewModels
     public class UserDashboardViewModel:BaseViewModel
     {
         private readonly IServiceFactory _serviceFactory;
-        public UserDashboardViewModel(IServiceFactory serviceFactory, IAuthService authService)
+        public UserDashboardViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
         }

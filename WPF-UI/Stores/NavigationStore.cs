@@ -17,5 +17,8 @@ namespace WPF_UI.Stores
         [ObservableProperty]
         private BaseViewModel? _currentViewModel;
 
+        [ObservableProperty]
+        private BaseViewModel? _previousViewModel;
+
     }
 }

@@ -95,6 +95,17 @@ namespace BusinessLogic.Services
 
             await Validate(bomDto);
 
+            //getBom materials from bom id
+            //foreach bommaterial if is on the new bom list update
+            //else needs to be delted
+            var exisitngBomMaterials = await _bomMaterialService.GetMaterialsByBomIdAsync(bomDto.Id);
+            foreach (BomMaterialDto bomMaterial in exisitngBomMaterials)
+            {
+                if (!bomDto.BomMaterials.Contains(bomMaterial))
+                {
+                    await _bomMaterialService.DeleteBomMaterialAsync(bomMaterial.BomId, bomMaterial.Material.MaterialNumber);
+                }
+            }
             //update aslo user roles
             foreach (BomMaterialDto bomMaterial in bomDto.BomMaterials)
             {

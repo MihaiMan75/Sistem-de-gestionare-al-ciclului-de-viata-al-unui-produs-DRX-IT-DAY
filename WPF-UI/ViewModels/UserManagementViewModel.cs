@@ -40,7 +40,7 @@ namespace WPF_UI.ViewModels
         private ObservableCollection<RoleSelectionWrap> _availableRoles;
 
 
-        public UserManagementViewModel(IServiceFactory serviceFactory, IAuthService authService)
+        public UserManagementViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
             _userService = _serviceFactory.GetUserService();

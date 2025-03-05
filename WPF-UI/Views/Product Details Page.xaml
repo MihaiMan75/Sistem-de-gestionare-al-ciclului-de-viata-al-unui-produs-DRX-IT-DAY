@@ -10,27 +10,41 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <StackPanel Grid.Row="0" HorizontalAlignment="Left" >
+            <Button Width="70" Height="30" Style="{StaticResource CustomButtonStyle}" Padding="10" Margin="10,0,10,0" Command="{Binding GoBackCommand}" >⬅️</Button>
+        </StackPanel>
         <!-- Header with current stage and change stage button -->
-        <Grid Grid.Row="0" Margin="0,0,0,20">
+        <Grid Grid.Row="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                <TextBlock Text="Current Stage: " FontSize="16" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding CurrentStage.Name}" 
-                         FontSize="16" 
-                         FontWeight="Bold" 
-                         Foreground="Blue"
-                         VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <StackPanel  Orientation="Horizontal">
+
+                    <TextBlock Text="Current Stage: " FontSize="16" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding CurrentStage.Name}" 
+                FontSize="16" 
+                FontWeight="Bold" 
+                Foreground="Blue"
+                VerticalAlignment="Center"/>
+
+                </StackPanel>
+                <StackPanel  Orientation="Horizontal">
+                    <TextBlock Text="Next Stage: " FontSize="16" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding NextStage}" FontSize="16" VerticalAlignment="Center" Foreground="Gray"/>
+                </StackPanel>
             </StackPanel>
 
+
             <Button Grid.Column="1" 
-            Content="Change Stage" 
+            Content="Stage ++" 
+            Style="{StaticResource CustomButtonStyle}"
             Command="{Binding ChangeStageCommand}"
             Width="120"
             Height="30"
@@ -38,7 +52,7 @@
         </Grid>
 
         <!-- Main Content -->
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="2">
             <!-- Basic Info Tab -->
             <TabItem Header="Basic Information">
                 <StackPanel Margin="10">
@@ -51,23 +65,23 @@
                         <!-- Left Column - Basic Info -->
                         <StackPanel Grid.Column="0" Margin="0,0,20,0">
                             <TextBlock Text="Name:" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Product.Name}" Margin="0,0,0,10"/>
+                            <TextBlock Text="{Binding CurrentProduct.Name}" Margin="0,0,0,10"/>
 
                             <TextBlock Text="Description:" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Product.Description}" 
+                            <TextBlock Text="{Binding CurrentProduct.Description}" 
                                      TextWrapping="Wrap" 
                                      Margin="0,0,0,10"/>
 
                             <TextBlock Text="Dimensions:" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                 <TextBlock Text="Height: "/>
-                                <TextBlock Text="{Binding Product.EstimatedHeight}"/>
+                                <TextBlock Text="{Binding CurrentProduct.EstimatedHeight}"/>
                                 <TextBlock Text=" cm  "/>
                                 <TextBlock Text="Width: "/>
-                                <TextBlock Text="{Binding Product.EstimatedWidth}"/>
+                                <TextBlock Text="{Binding CurrentProduct.EstimatedWidth}"/>
                                 <TextBlock Text=" cm  "/>
                                 <TextBlock Text="Weight: "/>
-                                <TextBlock Text="{Binding Product.EstimatedWeight}"/>
+                                <TextBlock Text="{Binding CurrentProduct.EstimatedWeight}"/>
                                 <TextBlock Text=" kg"/>
                             </StackPanel>
                         </StackPanel>
@@ -83,7 +97,7 @@
                                          FontWeight="Bold" 
                                          Margin="0,0,0,10"/>
                                 <TextBlock Text="Started on:"/>
-                                <TextBlock Text="{Binding CurrentStageHistory.StartOfStage, StringFormat=d}"
+                                <TextBlock Text="{Binding CurrentStageHistory.StartDate, StringFormat=d}"
                                          Margin="0,0,0,5"/>
                                 <TextBlock Text="Set by:"/>
                                 <TextBlock Text="{Binding CurrentStageHistory.User.Name}"
@@ -102,10 +116,10 @@
                               IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Material Number" 
-                                              Binding="{Binding MaterialNumber}" 
+                                              Binding="{Binding Material.MaterialNumber}" 
                                               Width="Auto"/>
                             <DataGridTextColumn Header="Description" 
-                                              Binding="{Binding MaterialDescription}" 
+                                              Binding="{Binding Material.MaterialDescription}"  
                                               Width="*"/>
                             <DataGridTextColumn Header="Quantity" 
                                               Binding="{Binding Quantity}" 
@@ -114,7 +128,7 @@
                                               Binding="{Binding UnitMeasureCode}" 
                                               Width="Auto"/>
                             <DataGridTextColumn Header="Weight per Unit" 
-                                              Binding="{Binding Weight}" 
+                                              Binding="{Binding Material.Weight}" 
                                               Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -129,13 +143,17 @@
                           Margin="10">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Stage" 
-                                          Binding="{Binding Stage.Name}" 
+                                          Binding="{Binding ProductStage.Name}" 
                                           Width="Auto"/>
                         <DataGridTextColumn Header="Started On" 
-                                          Binding="{Binding StartOfStage, StringFormat=d}" 
-                                          Width="Auto"/>
+                                          Binding="{Binding StartDate,StringFormat='{}{0:MM/dd/yyyy a\\t h:mm tt}'}" 
+                                          Width="Auto"
+                                            SortDirection="Descending"/>
+                        <DataGridTextColumn Header="Ended On" 
+                                           Binding="{Binding EndDate, StringFormat='{}{0:MM/dd/yyyy a\\t h:mm tt}'}" 
+                                           Width="Auto"/>
                         <DataGridTextColumn Header="Set By" 
-                                          Binding="{Binding User.Name}" 
+                                           Binding="{Binding User.Name}"  
                                           Width="Auto"/>
                         <DataGridTextColumn Header="Duration" 
                                           Binding="{Binding Duration}" 

@@ -11,7 +11,7 @@ namespace WPF_UI.ViewModels
      public class ReportsViewModel:BaseViewModel
     {
         private readonly IServiceFactory _serviceFactory;
-        public ReportsViewModel(IServiceFactory serviceFactory, IAuthService authService)
+        public ReportsViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
         }

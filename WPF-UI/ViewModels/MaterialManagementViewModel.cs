@@ -34,7 +34,7 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private string _searchText;
 
-        public MaterialManagementViewModel(IServiceFactory serviceFactory, IAuthService authService)
+        public MaterialManagementViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
             _materialService = _serviceFactory.GetMaterialsService();

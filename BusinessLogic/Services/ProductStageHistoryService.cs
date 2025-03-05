@@ -30,11 +30,11 @@ namespace BusinessLogic.Services
             _userService = new UserService(repositoryFactory);
         }
 
-        public async Task<int> CreateProductStageHistoryAsync(ProductStageHistoryDto productStageHistoryDto)
+        public async Task<int> CreateProductStageHistoryAsync(ProductStageHistoryDto productStageHistoryDto,int productId)
         {
             await Validate(productStageHistoryDto);
 
-            var productStageHistory = ProductStageHistoryMapper.FromDto(productStageHistoryDto);
+            var productStageHistory = ProductStageHistoryMapper.FromDto(productStageHistoryDto,productId);
             return await _productStageHitoryRepository.AddAsync(productStageHistory);
         }
 
@@ -78,11 +78,11 @@ namespace BusinessLogic.Services
             return ProductStageHistoryMapper.ToDto(productStageHisotory, stage, user);
         }
 
-        public async Task<bool> UpdateProductStageHistoryAsync(ProductStageHistoryDto productStageHistoryDto)
+        public async Task<bool> UpdateProductStageHistoryAsync(ProductStageHistoryDto productStageHistoryDto,int productId)
         {
             await Validate(productStageHistoryDto);
 
-            var productStageHistory = ProductStageHistoryMapper.FromDto(productStageHistoryDto);
+            var productStageHistory = ProductStageHistoryMapper.FromDto(productStageHistoryDto,productId);
             return await _productStageHitoryRepository.UpdateAsync(productStageHistory);
         }
 
@@ -91,11 +91,17 @@ namespace BusinessLogic.Services
             if (productStageHistory == null)
                 throw new ArgumentNullException(nameof(productStageHistory));
 
-            if (productStageHistory.EndDate < productStageHistory.StartDate)
+            if (productStageHistory.EndDate < productStageHistory.StartDate && productStageHistory.EndDate > DateTime.MinValue)
                 throw new Exception(productStageHistory.EndDate + " must be greater than " + productStageHistory.StartDate);
 
-            if(! await _userRepository.ExistsAsync(productStageHistory.User.Id))
-                throw new Exception("User must Exist in the database");
+            try
+            {
+                await _userRepository.ExistsAsync(productStageHistory.User.Id);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("You need to be logged in");
+            } 
             if(productStageHistory.ProductStage == null && !await _stageRepository.ExistsAsync(productStageHistory.ProductStage.Id))
                 throw new Exception("Stage must Exist in the database");
         }

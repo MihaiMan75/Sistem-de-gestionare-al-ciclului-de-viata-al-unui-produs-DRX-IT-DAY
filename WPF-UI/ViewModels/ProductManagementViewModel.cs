@@ -13,14 +13,19 @@ using BusinessLogic.Services;
 using System.ComponentModel;
 using WPF_UI.Interfaces;
 using BusinessLogic;
+using CommunityToolkit.Mvvm.Messaging;
+using WPF_UI.Messages;
 
 namespace WPF_UI.ViewModels
 {
-    public partial class ProductManagementViewModel:BaseViewModel
+    public partial class ProductManagementViewModel:BaseViewModel, IRecipient<BomSelectedMessage>
     {
         private readonly IProductService _productService;
         private readonly IBomService _bomService;
         private readonly IAuthService _authService;
+        private readonly INavigationService _navigationService;
+
+        private BomDto _recivedBOM;
 
         [ObservableProperty]
         private string _searchText;
@@ -34,22 +39,25 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private ObservableCollection<ProductDto> _products;
 
-        [ObservableProperty]
-        private ObservableCollection<BomDto> _bOMs;
+        //[ObservableProperty]
+        //private ObservableCollection<BomDto> _bOMs;
 
 
 
         private readonly IServiceFactory _serviceFactory;
-        public ProductManagementViewModel(IServiceFactory serviceFactory, IAuthService authService)
+        public ProductManagementViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
+            _navigationService = navigationService;
             _productService = _serviceFactory.GetProductService();
             _bomService = _serviceFactory.GetBomService();
             _authService = authService;
             _products = new ObservableCollection<ProductDto>();
-            _bOMs = new ObservableCollection<BomDto>();
+            //_bOMs = new ObservableCollection<BomDto>();
+            WeakReferenceMessenger.Default.Register<BomSelectedMessage>(this);
             LoadProductsCommand.Execute(null);
-            LoadBOMsCommand.Execute(null);
+            //LoadBOMsCommand.Execute(null);
+            
 
             //test
             CurrentProduct = new ProductDto();
@@ -87,19 +95,23 @@ namespace WPF_UI.ViewModels
             }
         }
 
-        [RelayCommand]
-        private async Task LoadBOMs()
-        {
-            try
-            {
-                var boms = await _bomService.GetAllBomsAsync();
-                BOMs = new ObservableCollection<BomDto>(boms);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error loading BOMs: {ex.Message}");
-            }
-        }
+        //[RelayCommand]
+        //private async Task LoadBOMs()
+        //{
+        //    try
+        //    {
+        //        var boms = await _bomService.GetAllBomsAsync();
+        //        BOMs = new ObservableCollection<BomDto>(boms);
+        //        if(_recivedBOM != null)
+        //        {
+        //            CurrentProduct.ProductBom = _recivedBOM;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine($"Error loading BOMs: {ex.Message}");
+        //    }
+        //}
 
         [RelayCommand]
         private async Task Save()
@@ -110,6 +122,7 @@ namespace WPF_UI.ViewModels
 
                 if (existingProduct != null)
                 {
+                    // Update existing product
                     existingProduct.Description = CurrentProduct.Description;
                     existingProduct.EstimatedWeight = CurrentProduct.EstimatedWeight;
                     existingProduct.EstimatedHeight = CurrentProduct.EstimatedHeight;
@@ -141,10 +154,12 @@ namespace WPF_UI.ViewModels
                         },
                         StartDate = DateTime.Now,
                         EndDate = DateTime.Now,
+                        //problem with the end Date needs to be greater than Start Date but also can be null;
                         User = _authService.CurrentUser
 
                     });
                     CurrentProduct.StageHistory = stageHistory;
+                    //is Curentstage is updated elsewhere?
                     CurrentProduct.Curentstage = stageHistory.FirstOrDefault()?.ProductStage;
                     CurrentProduct.Id = await _productService.CreateProductAsync(CurrentProduct);
                 }
@@ -155,7 +170,7 @@ namespace WPF_UI.ViewModels
             catch (Exception ex)
             {
                 // Handle error - could show message to user
-                System.Diagnostics.Debug.WriteLine($"Error saving Product: {ex.Message}");
+                MessageBox.Show($"Error saving Product: {ex.Message}");
             }
         }
 
@@ -203,10 +218,43 @@ namespace WPF_UI.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async void View(ProductDto product)
+        {
+            _navigationService.NavigateTo<ProductDetailsViewModel>();
+            WeakReferenceMessenger.Default.Send(new ProductSelectedMessage(product));
+        }
+
+        [RelayCommand]
+        private void CreateNewBom()
+        {
+            //IT will send back an message with the selected bom and call navigationSerivce.GoBack()    
+
+            _navigationService.NavigateTo<BOMManagementViewModel>();
+        }
+
+        [RelayCommand]
+        private void EditSelectedBom()
+        {
+            if (CurrentProduct?.ProductBom == null) return;
+
+            //BOMManagementViewModel.SelectedBomId = CurrentProduct.ProductBom.Id;
+            //maybe we should send a message to it?
+           
+            _navigationService.NavigateTo<BOMManagementViewModel>();
+            WeakReferenceMessenger.Default.Send(new BomSelectedMessage(CurrentProduct.ProductBom));
+        }
+
         private void ResetForm()
         {
             CurrentProduct = new ProductDto();
             SelectedProduct = null;
+        }
+
+        public void Receive(BomSelectedMessage message)
+        {
+            CurrentProduct.ProductBom = message.Value;
+            //LoadBOMsCommand.Execute(null);
         }
     }
 }

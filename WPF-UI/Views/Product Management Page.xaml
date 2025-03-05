@@ -40,7 +40,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
                         <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*"/>
-                        <DataGridTextColumn Header="Current Stage" Binding="{Binding CurrentStage}" Width="1.5*"/>
+                        <DataGridTextColumn Header="Current Stage" Binding="{Binding Curentstage.Name}" Width="1.5*"/>
                         <DataGridTemplateColumn Header="Actions" Width="Auto">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -53,6 +53,10 @@
                                                 RelativeSource={RelativeSource AncestorType=Page}}"
                                                 CommandParameter="{Binding}"
                                                 Margin="2"/>
+                                        <Button Content="View" Command="{Binding DataContext.ViewCommand,
+                                            RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Margin="2"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -63,42 +67,92 @@
         </GroupBox>
 
         <!-- Right side - Product Form -->
-        <GroupBox Header="Product Details" Grid.Row="0" Grid.Column="1" Width="400">
-            <StackPanel Margin="10">
-                <TextBlock Text="Name:"/>
-                <TextBox Text="{Binding CurrentProduct.Name, UpdateSourceTrigger=PropertyChanged}"
+        <GroupBox Header="Product Details" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="400">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Name:"/>
+                    <TextBox Text="{Binding CurrentProduct.Name, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="Description:"/>
-                <TextBox Text="{Binding CurrentProduct.Description, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Description:"/>
+                    <TextBox Text="{Binding CurrentProduct.Description, UpdateSourceTrigger=PropertyChanged}"
                          TextWrapping="Wrap" Height="60"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="Height (cm):"/>
-                <TextBox Text="{Binding CurrentProduct.EstimatedHeight, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Height (cm):"/>
+                    <TextBox Text="{Binding CurrentProduct.EstimatedHeight, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="Width (cm):"/>
-                <TextBox Text="{Binding CurrentProduct.EstimatedWidth, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Width (cm):"/>
+                    <TextBox Text="{Binding CurrentProduct.EstimatedWidth, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="Weight (kg):"/>
-                <TextBox Text="{Binding CurrentProduct.EstimatedWeight, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Weight (kg):"/>
+                    <TextBox Text="{Binding CurrentProduct.EstimatedWeight, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,5,0,10"/>
 
-                <TextBlock Text="BOM:"/>
-                <ComboBox ItemsSource="{Binding BOMs}"
-                          SelectedItem="{Binding CurrentProduct.ProductBom}"
-                          DisplayMemberPath="Name"
-                          Margin="0,5,0,10"/>
+                    <GroupBox Header="BOM Details" Padding="10" Margin="10">
+                        <Grid>
+                            <!-- Define Rows: 1. Scrollable Content, 2. Buttons -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <!-- Scrollable content -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Buttons -->
+                            </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                    <Button Content="Cancel" Command="{Binding CancelCommand}" 
+                            <StackPanel Margin="5">
+                                <!-- BOM Name & ID -->
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Grid.Column="0" Text="BOM:" FontWeight="Bold" VerticalAlignment="Center" Margin="0,5"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding CurrentProduct.ProductBom.Name}" VerticalAlignment="Center" Margin="1"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="1" Text="BOM ID:" FontWeight="Bold" VerticalAlignment="Center" Margin="0,5"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding CurrentProduct.ProductBom.Id}" VerticalAlignment="Center" Margin="1"/>
+                                    </StackPanel>
+
+                                </Grid>
+
+                                <!-- BOM Material List -->
+                                <TextBlock Text="Materials:" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
+                                    <ListView ItemsSource="{Binding CurrentProduct.ProductBom.BomMaterials}" 
+                              Height="150" Margin="5">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Material Number" DisplayMemberBinding="{Binding Material.MaterialNumber}" Width="40"/>
+                                                <GridViewColumn Header="Material Description" DisplayMemberBinding="{Binding Material.MaterialDescription}" Width="120"/>
+                                                <GridViewColumn Header="Quantity" DisplayMemberBinding="{Binding Quantity}" Width="60"/>
+                                                <GridViewColumn Header="Unit Measure" DisplayMemberBinding="{Binding UnitMeasureCode}" Width="60"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Buttons Aligned Right -->
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                <Button Content="New" Command="{Binding CreateNewBomCommand}" Width="60" Margin="5"/>
+                                <Button Content="Edit" Command="{Binding EditSelectedBomCommand}" 
+                    IsEnabled="{Binding CurrentProduct.ProductBom, Converter={StaticResource NullToBoolConverter}}" 
+                    Width="60" Margin="5"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                        <Button Content="Cancel" Command="{Binding CancelCommand}" 
                             Width="100" Margin="0,0,10,0"/>
-                    <Button Content="Save" Command="{Binding SaveCommand}"
+                        <Button Content="Save" Command="{Binding SaveCommand}"
                             Width="100" IsDefault="True"/>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </ScrollViewer>
         </GroupBox>
     </Grid>
 </Page>

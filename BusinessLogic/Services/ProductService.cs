@@ -33,15 +33,17 @@ namespace BusinessLogic.Services
         {
             await Validate(productDto);
 
-            //bom already created in the db?
-            //await _bomService.CreateBomAsync(productDto.ProductBom);
-
+             var bomId = await _bomService.CreateBomAsync(productDto.ProductBom);
+                productDto.ProductBom.Id = bomId;
+            //after creating the product id in the db we can create the product stage history
+           
+            var product = ProductMapper.FromDto(productDto);
+            var productId = await _productRepository.AddAsync(product);
             foreach (var productStageHistory in productDto.StageHistory)
             {
-                await _productStageHistoryService.CreateProductStageHistoryAsync(productStageHistory);
+                await _productStageHistoryService.CreateProductStageHistoryAsync(productStageHistory, productId);
             }
-            var product = ProductMapper.FromDto(productDto);
-            return await _productRepository.AddAsync(product);
+            return productId;
         }
 
         public async Task<bool> DeleteProductAsync(int id)
@@ -86,14 +88,36 @@ namespace BusinessLogic.Services
         public async Task<bool> UpdateProductAsync(ProductDto productDto)
         {
             await Validate(productDto);
-            //bom? productStageHistory?
+           
            await _bomService.UpdateBomAsync(productDto.ProductBom);
-            foreach(var productStageHistory in productDto.StageHistory)
-            {
-               await _productStageHistoryService.UpdateProductStageHistoryAsync(productStageHistory);
-            }
+           
             var product = ProductMapper.FromDto(productDto);
+            foreach (var productStageHistory in productDto.StageHistory)
+            {
+                await _productStageHistoryService.UpdateProductStageHistoryAsync(productStageHistory,productDto.Id);
+            }
             return await _productRepository.UpdateAsync(product);
+        }
+
+        public async Task<bool> AddProductStageAsync(ProductDto product, ProductStageHistoryDto newStage)
+        {
+            if (product == null)
+                throw new ArgumentException($"Product with ID {product.Id} not found.");
+
+            if (newStage == null || newStage.ProductStage == null)
+                throw new ArgumentException("New stage cannot be null.");
+
+            // Close the previous stage if it's still open
+            var lastStage = product.StageHistory.FirstOrDefault(s => s.ProductStage == product.Curentstage);
+            if (lastStage != null && lastStage.EndDate == lastStage.StartDate)
+            {
+                lastStage.EndDate = newStage.StartDate;
+                await _productStageHistoryService.UpdateProductStageHistoryAsync(lastStage, product.Id);
+            }
+
+            product.Curentstage = newStage.ProductStage;
+
+            return await _productStageHistoryService.CreateProductStageHistoryAsync(newStage, product.Id) > 0;
         }
 
         public async Task<IEnumerable<ProductDto>> GetProductsWithPaginationAsync(int pageNumber, int pageSize)
