@@ -164,6 +164,9 @@ namespace WPF_UI.ViewModels
                 {
                     CurrentStageHistory.EndDate = DateTime.Now;
                     await _productStageHistoryService.UpdateProductStageHistoryAsync(CurrentStageHistory, CurrentProduct.Id);
+                    StageHistory.Remove(CurrentStageHistory);
+                    StageHistory.Add(CurrentStageHistory);
+
                 }
 
                 //update the current product in view
