@@ -91,8 +91,8 @@ namespace BusinessLogic.Services
             if (productStageHistory == null)
                 throw new ArgumentNullException(nameof(productStageHistory));
 
-            if (productStageHistory.EndDate < productStageHistory.StartDate && productStageHistory.EndDate > DateTime.MinValue)
-                throw new Exception(productStageHistory.EndDate + " must be greater than " + productStageHistory.StartDate);
+            //if (productStageHistory.EndDate < productStageHistory.StartDate && productStageHistory.EndDate > DateTime.MinValue)
+            //    throw new Exception(productStageHistory.EndDate + " must be greater than " + productStageHistory.StartDate);
 
             try
             {

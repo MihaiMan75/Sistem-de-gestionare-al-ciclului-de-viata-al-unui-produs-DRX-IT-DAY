@@ -39,6 +39,13 @@
                     <TextBlock Text="Next Stage: " FontSize="16" VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding NextStage}" FontSize="16" VerticalAlignment="Center" Foreground="Gray"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="End Date (Expected):" FontWeight="Bold" Margin="0,0,15,0"/>
+                    <DatePicker x:Name="endDatePicker" 
+                    SelectedDate="{Binding EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Width="300"
+                     />
+                </StackPanel>
             </StackPanel>
 
 

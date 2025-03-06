@@ -48,6 +48,8 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private Visibility _buttonVisibility = Visibility.Visible;
 
+        [ObservableProperty]
+        private DateTime _endDate;
 
         private readonly IServiceFactory _serviceFactory;
         public ProductDetailsViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
@@ -62,13 +64,13 @@ namespace WPF_UI.ViewModels
            // LoadStagesCommand.Execute(null);
             WeakReferenceMessenger.Default.Register<ProductSelectedMessage>(this);
             _navigationService = navigationService;
-           
 
         }
 
         [RelayCommand]
         private async Task LoadStages()
         {
+            EndDate = DateTime.Now;
             try
             {
                 stages = (List<StageDto>)await _stageService.GetAllStagesAsync();
@@ -132,55 +134,73 @@ namespace WPF_UI.ViewModels
         [RelayCommand]
         public async Task ChangeStage()
         {
-            //verfy if theres another stage in the enum //test only
-            try
-            {
+           
+
+                //verfy if theres another stage in the enum //test only
+                try
+                {
+                   
+
                 StageDto stage;
-                var currentStageIndex = CurrentStage.Id;
-                if (currentStageIndex  < stages.Count) //Id starts from 1 and the list form 0 so stage = stages[currentStageIndex]; goes by one up.
-                {
-                    stage = stages[currentStageIndex];
-                }
-                else
-                {
-                    ButtonVisibility = Visibility.Collapsed;
-                    return;
-                }
+                    var currentStageIndex = CurrentStage.Id;
+                    if (currentStageIndex < stages.Count) //Id starts from 1 and the list form 0 so stage = stages[currentStageIndex]; goes by one up.
+                    {
+                        stage = stages[currentStageIndex];
+                    }
+                    else
+                    {
+                        ButtonVisibility = Visibility.Collapsed;
+                        return;
+                    }
 
-
-                //update the product stage
-                var productStageHisotry = new ProductStageHistoryDto
-                {
-                    ProductStage = stage,
-                    StartDate = DateTime.Now,
-                    User = _authService.CurrentUser,
-                    EndDate = DateTime.Now
-                };
-
-                    await _productService.AddProductStageAsync(CurrentProduct, productStageHisotry);
+                    if (EndDate < DateTime.Now)
+                    {
+                        //default time
+                        EndDate = DateTime.Now;
+                    }
+                //else expected date
 
                 //update the current stage endDate
                 if (CurrentStageHistory != null)
                 {
                     CurrentStageHistory.EndDate = DateTime.Now;
                     await _productStageHistoryService.UpdateProductStageHistoryAsync(CurrentStageHistory, CurrentProduct.Id);
-                    StageHistory.Remove(CurrentStageHistory);
-                    StageHistory.Add(CurrentStageHistory);
 
                 }
 
-                //update the current product in view
-                CurrentProduct.StageHistory.Add(productStageHisotry);
-            StageHistory.Add(productStageHisotry);
-            CurrentProduct.Curentstage = stage;
-            CurrentStage = stage;
-            await LoadNextStage();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+                //update the product stage
+                var productStageHisotry = new ProductStageHistoryDto
+                    {
+                        ProductStage = stage,
+                        StartDate = DateTime.Now,
+                        User = _authService.CurrentUser,
+                        EndDate = EndDate
+                    };
+
+                    await _productService.AddProductStageAsync(CurrentProduct, productStageHisotry);
+                    CurrentProduct.StageHistory.Add(productStageHisotry);
+
+                
+                
+                // Update the current history list; add the updated stage and add the new one
+                var updatedStageHistory = StageHistory.FirstOrDefault(sh => sh.ProductStage.Id == CurrentStage.Id);
+                if (updatedStageHistory != null)
+                {
+                    updatedStageHistory.EndDate = DateTime.Now;
+                }
+                
+                StageHistory.Add(productStageHisotry);
+                CurrentProduct.Curentstage = stage;
+                CurrentStage = stage;
+
+
+                await LoadNextStage();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
         }
 
         [RelayCommand]
