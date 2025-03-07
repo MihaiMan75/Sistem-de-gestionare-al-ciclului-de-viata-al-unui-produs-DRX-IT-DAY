@@ -48,7 +48,6 @@ namespace WPF_UI.UserControls
             {
                 pwdHiddenPassword.Password = password;
             }
-
             if (txtVisiblePassword.Visibility == Visibility.Visible && txtVisiblePassword.Text != password)
             {
                 txtVisiblePassword.Text = password;
@@ -93,6 +92,8 @@ namespace WPF_UI.UserControls
             if (txtVisiblePassword.Visibility == Visibility.Visible)
             {
                 Password = txtVisiblePassword.Text;
+                if (DataContext is LoginViewModel vm)
+                    vm.Password = txtVisiblePassword.Text;  // Fixed line - use txtVisiblePassword.Text instead of pwdHiddenPassword.Password
             }
         }
     }
