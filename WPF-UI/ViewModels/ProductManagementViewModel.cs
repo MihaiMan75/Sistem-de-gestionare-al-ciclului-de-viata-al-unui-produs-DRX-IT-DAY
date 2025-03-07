@@ -39,6 +39,12 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private ObservableCollection<ProductDto> _products;
 
+        [ObservableProperty]
+        private DateTime _endDate;
+
+        [ObservableProperty]
+        private string _curentStage = "Design";
+
         //[ObservableProperty]
         //private ObservableCollection<BomDto> _bOMs;
 
@@ -56,6 +62,7 @@ namespace WPF_UI.ViewModels
             //_bOMs = new ObservableCollection<BomDto>();
             WeakReferenceMessenger.Default.Register<BomSelectedMessage>(this);
             LoadProductsCommand.Execute(null);
+            EndDate = DateTime.Now;
             //LoadBOMsCommand.Execute(null);
             
 
@@ -129,10 +136,13 @@ namespace WPF_UI.ViewModels
                     existingProduct.EstimatedWidth = CurrentProduct.EstimatedWidth;
                     existingProduct.Name = CurrentProduct.Name;
                     existingProduct.ProductBom = CurrentProduct.ProductBom;
+                    
 
 
                     //momentanly we are not updating the stage history
                     existingProduct.StageHistory = CurrentProduct.StageHistory;
+                    existingProduct.Curentstage = CurrentProduct.Curentstage;
+                   existingProduct.StageHistory.Where(x => x.ProductStage.Id == CurrentProduct.Curentstage.Id).FirstOrDefault().EndDate = EndDate;
 
                     await _productService.UpdateProductAsync(existingProduct);
                 }
@@ -141,6 +151,11 @@ namespace WPF_UI.ViewModels
                     if (_authService == null)
                     {
                         throw new InvalidOperationException("Authentication service is not initialized.");
+                    }
+
+                    if (EndDate < DateTime.Now)
+                    {
+                        EndDate = DateTime.Now;
                     }
 
                     List<ProductStageHistoryDto> stageHistory = new List<ProductStageHistoryDto>();
@@ -153,8 +168,7 @@ namespace WPF_UI.ViewModels
                             Description = "Design stage"
                         },
                         StartDate = DateTime.Now,
-                        EndDate = DateTime.Now,
-                        //problem with the end Date needs to be greater than Start Date but also can be null;
+                        EndDate = EndDate,
                         User = _authService.CurrentUser
 
                     });
@@ -196,8 +210,10 @@ namespace WPF_UI.ViewModels
                 EstimatedWeight = Product.EstimatedWeight,
                 ProductBom = Product.ProductBom,
                 StageHistory = Product.StageHistory,
-                Curentstage = Product.Curentstage
+                Curentstage = Product.Curentstage,
             };
+            EndDate= Product.StageHistory.Where(x => x.ProductStage.Id == Product.Curentstage.Id).FirstOrDefault().EndDate ?? DateTime.Now;
+            CurentStage = Product.Curentstage.Name;
         }
 
         [RelayCommand]
@@ -249,6 +265,8 @@ namespace WPF_UI.ViewModels
         {
             CurrentProduct = new ProductDto();
             SelectedProduct = null;
+            EndDate = DateTime.Now;
+            CurentStage = "Design";
         }
 
         public void Receive(BomSelectedMessage message)

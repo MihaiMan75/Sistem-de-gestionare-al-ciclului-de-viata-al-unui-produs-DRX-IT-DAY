@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPF_UI.Interfaces;
 using WPF_UI.Messages;
+using WPF_UI.Wrappers;
 
 namespace WPF_UI.ViewModels
 {
@@ -25,7 +26,7 @@ namespace WPF_UI.ViewModels
         private readonly INavigationService _navigationService;
 
         private List<StageDto> stages = new List<StageDto>();
-      
+
 
         [ObservableProperty]
         private ProductDto _currentProduct;
@@ -34,13 +35,13 @@ namespace WPF_UI.ViewModels
         private StageDto _currentStage;
 
         [ObservableProperty]
-        private ProductStageHistoryDto _currentStageHistory;
+        private ProductStageHistoryViewModel _currentStageHistory;
 
         [ObservableProperty]
         private ObservableCollection<BomMaterialDto> _bOMMaterials;
 
         [ObservableProperty]
-        private ObservableCollection<ProductStageHistoryDto> _stageHistory;
+        private ObservableCollection<ProductStageHistoryViewModel> _stageHistory;
 
         [ObservableProperty]
         private string _nextStage = "null";
@@ -60,8 +61,8 @@ namespace WPF_UI.ViewModels
             _productStageHistoryService = _serviceFactory.GetProductStageHistoryService();
             _authService = authService;
             BOMMaterials = new ObservableCollection<BomMaterialDto>();
-            StageHistory = new ObservableCollection<ProductStageHistoryDto>();
-           // LoadStagesCommand.Execute(null);
+            StageHistory = new ObservableCollection<ProductStageHistoryViewModel>();
+            // LoadStagesCommand.Execute(null);
             WeakReferenceMessenger.Default.Register<ProductSelectedMessage>(this);
             _navigationService = navigationService;
 
@@ -89,13 +90,27 @@ namespace WPF_UI.ViewModels
 
                 var currentDate = DateTime.Now;
                 CurrentStage = CurrentProduct.Curentstage;
-                StageHistory = new ObservableCollection<ProductStageHistoryDto>(CurrentProduct.StageHistory);
+
+                // Convert ProductStageHistoryDto objects to ProductStageHistoryViewModel objects
+                StageHistory = new ObservableCollection<ProductStageHistoryViewModel>(
+                    CurrentProduct.StageHistory.Select(dto => new ProductStageHistoryViewModel(dto))
+                );
+
                 //if the end time is = to the start time then the stage is active
                 BOMMaterials = new ObservableCollection<BomMaterialDto>(CurrentProduct.ProductBom.BomMaterials);
-                CurrentStageHistory = StageHistory.Where(stage => stage.StartDate <= currentDate)
-                        .OrderByDescending(stage => stage.StartDate)
-                        .FirstOrDefault();
-               await LoadNextStage();
+
+                // Find the most recent stage history and wrap it
+                var latestHistoryDto = CurrentProduct.StageHistory
+                    .Where(stage => stage.StartDate <= currentDate)
+                    .OrderByDescending(stage => stage.StartDate)
+                    .FirstOrDefault();
+
+                if (latestHistoryDto != null)
+                {
+                    CurrentStageHistory = new ProductStageHistoryViewModel(latestHistoryDto);
+                }
+
+                await LoadNextStage();
 
             }
             catch (Exception ex)
@@ -134,73 +149,68 @@ namespace WPF_UI.ViewModels
         [RelayCommand]
         public async Task ChangeStage()
         {
-           
-
-                //verfy if theres another stage in the enum //test only
-                try
-                {
-                   
-
+            try
+            {
                 StageDto stage;
-                    var currentStageIndex = CurrentStage.Id;
-                    if (currentStageIndex < stages.Count) //Id starts from 1 and the list form 0 so stage = stages[currentStageIndex]; goes by one up.
-                    {
-                        stage = stages[currentStageIndex];
-                    }
-                    else
-                    {
-                        ButtonVisibility = Visibility.Collapsed;
-                        return;
-                    }
+                var currentStageIndex = CurrentStage.Id;
 
-                    if (EndDate < DateTime.Now)
-                    {
-                        //default time
-                        EndDate = DateTime.Now;
-                    }
-                //else expected date
+                if (currentStageIndex < stages.Count)
+                {
+                    stage = stages[currentStageIndex];
+                }
+                else
+                {
+                    ButtonVisibility = Visibility.Collapsed;
+                    return;
+                }
 
-                //update the current stage endDate
+                if (EndDate < DateTime.Now)
+                {
+                    EndDate = DateTime.Now;
+                }
+
+                // Update the current stage endDate
                 if (CurrentStageHistory != null)
                 {
                     CurrentStageHistory.EndDate = DateTime.Now;
-                    await _productStageHistoryService.UpdateProductStageHistoryAsync(CurrentStageHistory, CurrentProduct.Id);
-
+                    await _productStageHistoryService.UpdateProductStageHistoryAsync(
+                        CurrentStageHistory.GetDto(), CurrentProduct.Id);
                 }
 
-                //update the product stage
-                var productStageHisotry = new ProductStageHistoryDto
-                    {
-                        ProductStage = stage,
-                        StartDate = DateTime.Now,
-                        User = _authService.CurrentUser,
-                        EndDate = EndDate
-                    };
+                // Create a new history entry
+                var newHistoryDto = new ProductStageHistoryDto
+                {
+                    ProductStage = stage,
+                    StartDate = DateTime.Now,
+                    User = _authService.CurrentUser,
+                    EndDate = EndDate
+                };
 
-                    await _productService.AddProductStageAsync(CurrentProduct, productStageHisotry);
-                    CurrentProduct.StageHistory.Add(productStageHisotry);
+                await _productService.AddProductStageAsync(CurrentProduct, newHistoryDto);
+                CurrentProduct.StageHistory.Add(newHistoryDto);
 
-                
-                
-                // Update the current history list; add the updated stage and add the new one
-                var updatedStageHistory = StageHistory.FirstOrDefault(sh => sh.ProductStage.Id == CurrentStage.Id);
+                // Update the UI collection by finding and updating the wrapped object
+                var updatedStageHistory = StageHistory.FirstOrDefault(sh =>
+                    sh.ProductStage.Id == CurrentStage.Id);
+
                 if (updatedStageHistory != null)
                 {
                     updatedStageHistory.EndDate = DateTime.Now;
                 }
-                
-                StageHistory.Add(productStageHisotry);
+
+                // Add the new history item as a wrapped object
+                StageHistory.Add(new ProductStageHistoryViewModel(newHistoryDto));
+
                 CurrentProduct.Curentstage = stage;
                 CurrentStage = stage;
-
+                CurrentStageHistory = StageHistory.Last();
 
                 await LoadNextStage();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         [RelayCommand]

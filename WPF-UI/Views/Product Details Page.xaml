@@ -101,14 +101,14 @@
                                 Background="#F5F5F5">
                             <StackPanel>
                                 <TextBlock Text="Current Stage Details" 
-                                         FontWeight="Bold" 
-                                         Margin="0,0,0,10"/>
+                                     FontWeight="Bold" 
+                                     Margin="0,0,0,10"/>
                                 <TextBlock Text="Started on:"/>
                                 <TextBlock Text="{Binding CurrentStageHistory.StartDate, StringFormat=d}"
-                                         Margin="0,0,0,5"/>
+                                     Margin="0,0,0,5"/>
                                 <TextBlock Text="Set by:"/>
                                 <TextBlock Text="{Binding CurrentStageHistory.User.Name}"
-                                         Margin="0,0,0,5"/>
+                                     Margin="0,0,0,5"/>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -145,26 +145,27 @@
             <!-- Stage History Tab -->
             <TabItem Header="Stage History">
                 <DataGrid ItemsSource="{Binding StageHistory}"
-                          AutoGenerateColumns="False"
-                          IsReadOnly="True"
-                          Margin="10">
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Margin="10">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Stage" 
-                                          Binding="{Binding ProductStage.Name}" 
-                                          Width="Auto"/>
+                                  Binding="{Binding ProductStage.Name}" 
+                                  Width="Auto"/>
                         <DataGridTextColumn Header="Started On" 
-                                          Binding="{Binding StartDate,StringFormat='{}{0:MM/dd/yyyy a\\t h:mm tt}'}" 
-                                          Width="Auto"
-                                            SortDirection="Descending"/>
+                                  Binding="{Binding StartDate,StringFormat='{}{0:MM/dd/yyyy a\\t h:mm tt}'}" 
+                                  Width="Auto"
+                                  SortDirection="Descending"/>
                         <DataGridTextColumn Header="Ended On" 
-                                           Binding="{Binding EndDate, StringFormat='{}{0:MM/dd/yyyy a\\t h:mm tt}'}" 
-                                           Width="Auto"/>
+                                   Binding="{Binding EndDate, StringFormat='{}{0:MM/dd/yyyy a\\t h:mm tt}'}" 
+                                   Width="Auto"/>
                         <DataGridTextColumn Header="Set By" 
-                                           Binding="{Binding User.Name}"  
-                                          Width="Auto"/>
+                                   Binding="{Binding User.Name}"  
+                                  Width="Auto"/>
+                        <!-- The Duration binding remains the same, but now it will notify properly -->
                         <DataGridTextColumn Header="Duration" 
-                                          Binding="{Binding Duration}" 
-                                          Width="*"/>
+                                  Binding="{Binding Duration}" 
+                                  Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
