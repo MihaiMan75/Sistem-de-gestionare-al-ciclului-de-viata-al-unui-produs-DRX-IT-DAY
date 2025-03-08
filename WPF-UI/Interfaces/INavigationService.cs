@@ -13,6 +13,7 @@ namespace WPF_UI.Interfaces
         void NavigateToSimple<T>() where T : BaseViewModel, new();
         void NavigateTo<T>() where T : BaseViewModel;
         void NavigateBack();
+        void NavigateToLogin();
         //go back method
         //go foward?
     }

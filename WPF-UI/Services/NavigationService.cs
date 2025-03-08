@@ -30,7 +30,7 @@ namespace WPF_UI.Services
         {
             _navigationStore = navigationStore;
             _authService = authService;
-            CurrentViewModel = new LoginViewModel(this,authService);
+            NavigateToLogin();
             _navigationStore.CurrentViewModel = CurrentViewModel;
             _navigationStore.PreviousViewModel = _previousViewModel;
             _serviceFactory = serviceFactory;
@@ -53,6 +53,14 @@ namespace WPF_UI.Services
             _navigationStore.CurrentViewModel = CurrentViewModel;
         }
 
+        public void NavigateToLogin()
+        { 
+            _authService.Logout();
+            CurrentViewModel = new LoginViewModel(this, _authService);
+            PreviousViewModel = CurrentViewModel;
+            _navigationStore.CurrentViewModel = CurrentViewModel;
+            _navigationStore.PreviousViewModel = PreviousViewModel;
+        }
         public void NavigateBack()
         {
             if (PreviousViewModel != null)

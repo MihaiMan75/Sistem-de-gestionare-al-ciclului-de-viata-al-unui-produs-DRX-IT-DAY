@@ -74,19 +74,24 @@
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                <Button x:Name="Logout" Style="{StaticResource TransparentButton}" Content="🦎 Logout" Padding="15" FontSize="15" BorderThickness="0" Command="{Binding LogOutCommand}"/>
+                <TextBlock Text="👤: " Padding="0,5,0,5" Margin="15,0,0,0" Foreground="WhiteSmoke" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                <TextBlock Text="{Binding UserName}" Padding="0,8,0,5" FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" Foreground="WhiteSmoke" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="  -  " Padding="0,5,0,5" Margin="0,0,0,0" Foreground="WhiteSmoke" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding UserRole}" Padding="0,8,0,5" FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" Foreground="WhiteSmoke" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,3,10,0">
-                <Button x:Name="btnMinimize"  Click="btnMinimize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="-" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
-                <Button x:Name="btnMaximize"  Click="btnMaximize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="⏹️" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
-                <Button x:Name="btnClose"  Click="btnClose_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Content="❌" Foreground="WhiteSmoke" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,3,10,0">
+                <Button x:Name="btnMinimize"  Click="btnMinimize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="-" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Button x:Name="btnMaximize"  Click="btnMaximize_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Foreground="WhiteSmoke" Content="⏹️" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Button x:Name="btnClose"  Click="btnClose_Click" Width="20" Height="20" Margin="10,0,10,0"  Background="Transparent" Content="❌" Foreground="WhiteSmoke" Padding="15" FontSize="12" BorderThickness="0" Style="{StaticResource TransparentButton}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </StackPanel>
 
         </Grid>
         <!--Window Buttons-->
 
         <!--Background-->
-        <Border Grid.Row="0" Grid.RowSpan="2" BorderBrush="DarkMagenta" Opacity="0.98" BorderThickness="0" CornerRadius="35,35,0,0" Margin="0,25,0,0">
+        <Border Grid.Row="1" Grid.RowSpan="2" BorderBrush="DarkMagenta" Opacity="0.98" BorderThickness="0" CornerRadius="35,35,0,0" Margin="0,0,0,0">
             <Border.Background>
                 <RadialGradientBrush RadiusX="3" RadiusY="0.8" Opacity="1">
                     <GradientStop Color="#2d3436" Offset="0" />

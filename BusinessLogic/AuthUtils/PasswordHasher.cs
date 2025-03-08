@@ -15,7 +15,16 @@ namespace ProductManagementBusinessLogic.AuthUtils
 
         public bool VerifyPassword(string password, string hashedPassword)
         {
-            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+            try
+            {
+                return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+            }
+            catch (BCrypt.Net.SaltParseException ex)
+            {
+                // Log the exception or handle it as needed
+                Console.WriteLine($"SaltParseException: {ex.Message}");
+                return false;
+            }
         }
     }
 }
