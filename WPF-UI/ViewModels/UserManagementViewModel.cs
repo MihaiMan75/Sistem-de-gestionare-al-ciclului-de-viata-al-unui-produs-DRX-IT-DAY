@@ -147,8 +147,7 @@ namespace WPF_UI.ViewModels
             }
             catch (Exception ex)
             {
-                // Handle error - could show message to user
-                System.Diagnostics.Debug.WriteLine($"Error saving User: {ex.Message}");
+               MessageBox.Show($"Error saving user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -171,7 +170,7 @@ namespace WPF_UI.ViewModels
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Roles = user.Roles,
-                PasswordHashed = user.PasswordHashed
+                PasswordHashed = ""
             };
             //also set roles in the ui
             foreach (var role in AvailableRoles)

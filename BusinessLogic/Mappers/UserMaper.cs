@@ -17,7 +17,7 @@ namespace BusinessLogic.Mappers
                 Id = user.id_user,
                 Name = user.name,
                 Email = user.email,
-                PhoneNumber = int.TryParse(user.phone_number,out int phoneNumber) ? phoneNumber : 0,
+                PhoneNumber = user.phone_number,
                 PasswordHashed = user.PasswordHashed,
                 Roles = RoleMapper.ToDto(roles)
             };

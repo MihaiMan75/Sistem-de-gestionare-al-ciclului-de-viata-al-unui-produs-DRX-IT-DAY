@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using BusinessLogic.DtoModels;
 using BusinessLogic.Mappers;
 using DataAccess.Repositories;
+using ProductManagementBusinessLogic.AuthUtils;
 
 namespace BusinessLogic.Services
 {
@@ -18,12 +19,15 @@ namespace BusinessLogic.Services
         private readonly IRepositoryFactory _repositoryFactory;
         private readonly UserRepository _userRepository;
         private readonly UserRolesRepository _userRoleReposiotory;
+        private readonly IPasswordHasher _passwordHasher;
 
         public UserService(IRepositoryFactory repositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
             _userRepository = repositoryFactory.CreateUserRepository();
             _userRoleReposiotory = repositoryFactory.CreateUserRolesRepository();
+            _passwordHasher = new PasswordHasher();
+
 
         }
 
@@ -32,6 +36,7 @@ namespace BusinessLogic.Services
             await Validate(userDto);
            
             var user = UserMaper.FromDto(userDto);
+            user.PasswordHashed = _passwordHasher.HashPassword(userDto.PasswordHashed);
             userDto.Id = await _userRepository.AddAsync(user);
             //link the user to the roles
             foreach (RoleDto roleDto in userDto.Roles)
@@ -79,6 +84,7 @@ namespace BusinessLogic.Services
             await Validate(userDto);
             UserRoles userRoles = new UserRoles();
             userRoles.id_user = userDto.Id;
+            userDto.PasswordHashed = _passwordHasher.HashPassword(userDto.PasswordHashed);
 
             //search for the roles that are not in the user roles and delete them
             var existingRolesIds = await _userRoleReposiotory.GetUserRolesAsync(userDto.Id);
@@ -117,9 +123,12 @@ namespace BusinessLogic.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (String.IsNullOrEmpty(user.Name)|| String.IsNullOrEmpty(user.PasswordHashed)|| String.IsNullOrEmpty(user.Email) || user.PhoneNumber< 0)
+            if (String.IsNullOrEmpty(user.Name)|| String.IsNullOrEmpty(user.PasswordHashed)|| String.IsNullOrEmpty(user.Email) || String.IsNullOrEmpty(user.PhoneNumber))
                 throw new Exception("User name,password, email and phone number are required");
-            
+
+            if (!user.PhoneNumber.All(char.IsDigit))
+                throw new Exception("Phone number must contain only digits");
+
             if (user.Roles.Count == 0)
                 throw new Exception("User must have at least one role");
 
