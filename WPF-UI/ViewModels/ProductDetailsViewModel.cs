@@ -4,6 +4,8 @@ using BusinessLogic.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using LiveChartsCore.SkiaSharpView.Extensions;
+using LiveChartsCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +16,10 @@ using System.Windows;
 using WPF_UI.Interfaces;
 using WPF_UI.Messages;
 using WPF_UI.Wrappers;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 
 namespace WPF_UI.ViewModels
 {
@@ -52,6 +58,22 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private DateTime _endDate;
 
+        [ObservableProperty]
+        private IEnumerable<ISeries> _materialsSeries;
+
+        [ObservableProperty]
+        private LabelVisual _materialPieTitle;
+
+        [ObservableProperty]
+        private IEnumerable<ISeries> _stageSeries;
+
+        [ObservableProperty]
+        private IEnumerable<Axis> _xAxes;
+
+        [ObservableProperty]
+        private IEnumerable<Axis> _yAxes;
+
+
         private readonly IServiceFactory _serviceFactory;
         public ProductDetailsViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
@@ -66,7 +88,149 @@ namespace WPF_UI.ViewModels
             WeakReferenceMessenger.Default.Register<ProductSelectedMessage>(this);
             _navigationService = navigationService;
 
+            SetupPieChart();
+            SetupStageHistoryChart();
+
         }
+
+        private void SetupPieChart()
+        {
+            if (BOMMaterials != null && BOMMaterials.Count > 0)
+            {
+                MaterialsSeries = BOMMaterials
+                    .GroupBy(m => m.Material.MaterialDescription)
+                    .Select(g => new LiveChartsCore.SkiaSharpView.PieSeries<double>
+                    {
+                        Values = new[] { g.Sum(m => m.Quantity) },
+                        Name = $"{g.Key}",
+                        //InnerRadius = 50
+                    })
+                    .ToArray();
+
+                MaterialPieTitle = new LabelVisual
+                {
+                    Text = "Materials Distribution",
+                    TextSize = 20,
+                    Padding = new LiveChartsCore.Drawing.Padding(15)
+                };
+            }
+            else
+            {
+                // Fallback 
+                MaterialsSeries = new[] { 2, 4, 1, 4, 3 }.AsPieSeries();
+                MaterialPieTitle = new LabelVisual
+                {
+                    Text = "Sample Chart",
+                    TextSize = 20,
+                    Padding = new LiveChartsCore.Drawing.Padding(15)
+                };
+            }
+        }
+
+        private void SetupStageHistoryChart()
+        {
+            if (StageHistory != null && StageHistory.Count > 0)
+            {
+                // Sort history just in case
+                var sortedHistory = StageHistory.OrderBy(sh => sh.StartDate).ToList();
+
+                // Calculate duration 
+                var durationValues = sortedHistory.Select(sh => {
+                    DateTime endPoint = sh.EndDate ?? DateTime.Now;
+                    TimeSpan duration = endPoint - sh.StartDate;
+                    return duration.TotalDays; // Keep as double for the chart
+                }).ToArray();
+
+                // Format 
+                var durationLabels = sortedHistory.Select(sh => {
+                    DateTime endPoint = sh.EndDate ?? DateTime.Now;
+                    TimeSpan duration = endPoint - sh.StartDate;
+
+                    int days = (int)duration.TotalDays;
+                    int hours = duration.Hours;
+                    int minutes = duration.Minutes;
+                    int seconds = duration.Seconds;
+
+                    bool isExpected = sh.EndDate.HasValue && sh.EndDate > DateTime.Now;
+
+                    string formattedDuration;
+                    if (days > 0)
+                        formattedDuration = $"{days}d{hours}h";
+                    else if (hours > 0)
+                        formattedDuration = $"{hours}h{minutes}m";
+                    else
+                        formattedDuration = $"{minutes}m{seconds}s"; // Show seconds only for short durations
+
+                    return isExpected ? $"{formattedDuration} expected" : formattedDuration;
+                }).ToArray();
+
+                // Left column
+                var stageDurationSeries = new ColumnSeries<double>
+                {
+                    Values = durationValues,
+                    Name = "Stage Duration",
+                    Fill = new SolidColorPaint(SKColors.RoyalBlue),
+                    Stroke = null,
+                    MaxBarWidth = 30,
+                    DataLabelsSize = 12,
+                    DataLabelsPaint = new SolidColorPaint(SKColors.Black),
+                    DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
+                    DataLabelsFormatter = point => durationLabels[point.Index]
+                };
+
+                // Create an X Axis
+                var xAxis = new Axis
+                {
+                    Labels = sortedHistory.Select(sh => sh.ProductStage.Name).ToArray(),
+                    LabelsRotation = 45,
+                    TextSize = 12
+                };
+
+                // Create a Y Axis
+                var yAxis = new Axis
+                {
+                    Name = "Duration",
+                    NamePaint = new SolidColorPaint(SKColors.Gray),
+                    TextSize = 12,
+                    Labeler = value =>
+                    {
+                        int days = (int)value;
+                        double fractionalDay = value - days;
+                        int totalSeconds = (int)(fractionalDay * 24 * 60 * 60);
+                        int hours = totalSeconds / 3600;
+                        int minutes = (totalSeconds % 3600) / 60;
+                        int seconds = totalSeconds % 60;
+
+                        if (days > 0)
+                            return $"{days}d {hours}h {minutes}m";
+                        else if (hours > 0)
+                            return $"{hours}h {minutes}m";
+                        else
+                            return $"{minutes}m {seconds}s"; // Show seconds <1h
+                    }
+                };
+
+                StageSeries = new ISeries[] { stageDurationSeries };
+                XAxes = new Axis[] { xAxis };
+                YAxes = new Axis[] { yAxis };
+            }
+            else
+            {
+                // Fallback
+                StageSeries = new ISeries[]
+                {
+            new ColumnSeries<double>
+            {
+                Values = new double[] { 0 },
+                Name = "No stage history available"
+            }
+                };
+
+                XAxes = new Axis[] { new Axis { Labels = new[] { "No Data" } } };
+                YAxes = new Axis[] { new Axis { Name = "Duration (Days)" } };
+            }
+        }
+
 
         [RelayCommand]
         private async Task LoadStages()
@@ -110,8 +274,11 @@ namespace WPF_UI.ViewModels
                     CurrentStageHistory = new ProductStageHistoryViewModel(latestHistoryDto);
                 }
 
-                await LoadNextStage();
 
+
+                await LoadNextStage();
+                SetupPieChart();
+                SetupStageHistoryChart();
             }
             catch (Exception ex)
             {
@@ -206,6 +373,7 @@ namespace WPF_UI.ViewModels
                 CurrentStageHistory = StageHistory.Last();
 
                 await LoadNextStage();
+                SetupStageHistoryChart();
             }
             catch (Exception ex)
             {
