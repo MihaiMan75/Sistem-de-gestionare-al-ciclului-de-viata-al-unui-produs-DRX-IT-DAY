@@ -8,8 +8,9 @@
                 <ResourceDictionary Source="Styles/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="Styles/CustomButtonStyle.xaml"/>
                 <ResourceDictionary Source="Styles/TransparentButton.xaml"/>
-                
-                
+                <ResourceDictionary Source="Styles/GrayCostumButton.xaml"/>
+
+
                 <ResourceDictionary>
                     <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
                 </ResourceDictionary>
