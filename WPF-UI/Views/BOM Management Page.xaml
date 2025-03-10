@@ -76,6 +76,7 @@
                     Margin="10,0">
             <Button Content="Add ➡️" 
                     Command="{Binding AddMaterialCommand}"
+                     Style="{StaticResource CustomButtonStyle}"
                     Width="100" 
                     Margin="0,0,0,10"/>
            
@@ -144,6 +145,7 @@
                                         <Button Content="Delete" 
                                            Command="{Binding DataContext.DeleteCommand, 
                                            RelativeSource={RelativeSource AncestorType=Page}}"
+                                            Style="{StaticResource CustomButtonStyle}"
                                            CommandParameter="{Binding}"
                                            Margin="2"/>
                                     </StackPanel>
@@ -160,10 +162,12 @@
                           Margin="5">
                     <Button Content="Cancel" 
                         Command="{Binding CancelCommand}"
+                         Style="{StaticResource CustomButtonStyle}"    
                         Width="100" 
                         Margin="0,0,10,0"/>
                     <Button Content="Save" 
                         Command="{Binding SaveCommand}"
+                         Style="{StaticResource CustomButtonStyle}"    
                         Width="100"/>       
                 </StackPanel>
             </Grid>

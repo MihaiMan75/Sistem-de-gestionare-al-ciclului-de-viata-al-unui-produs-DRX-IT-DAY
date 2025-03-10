@@ -70,6 +70,7 @@
                         Grid.Row="1"
                         Content="Apply Filters"
                         Command="{Binding ApplyFiltersCommand}"
+                        Style="{StaticResource GrayCustomButton}"
                         Height="25"
                         Margin="5,23,5,0"/>
             </Grid>
@@ -124,6 +125,7 @@
 
                 <Button Content="Export to PDF"
                         Command="{Binding ExportToPdfCommand}"
+                         Style="{StaticResource GrayCustomButton}"
                         Width="120"
                         Height="30"/>
             </StackPanel>
