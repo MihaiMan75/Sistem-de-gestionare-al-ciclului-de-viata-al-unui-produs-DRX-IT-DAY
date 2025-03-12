@@ -18,7 +18,7 @@ using WPF_UI.Messages;
 
 namespace WPF_UI.ViewModels
 {
-    public partial class ProductManagementViewModel:BaseViewModel, IRecipient<BomSelectedMessage>
+    public partial class ProductManagementViewModel : BaseViewModel, IRecipient<BomSelectedMessage>, IRecipient<ProductSelectedMessage>
     {
         private readonly IProductService _productService;
         private readonly IBomService _bomService;
@@ -61,6 +61,7 @@ namespace WPF_UI.ViewModels
             _products = new ObservableCollection<ProductDto>();
             //_bOMs = new ObservableCollection<BomDto>();
             WeakReferenceMessenger.Default.Register<BomSelectedMessage>(this);
+            WeakReferenceMessenger.Default.Register<ProductSelectedMessage>(this);
             LoadProductsCommand.Execute(null);
             EndDate = DateTime.Now;
             //LoadBOMsCommand.Execute(null);
@@ -273,6 +274,12 @@ namespace WPF_UI.ViewModels
         {
             CurrentProduct.ProductBom = message.Value;
             //LoadBOMsCommand.Execute(null);
+        }
+
+        public void Receive(ProductSelectedMessage message)
+        {
+            //recived product
+            Edit(message.Value);
         }
     }
 }

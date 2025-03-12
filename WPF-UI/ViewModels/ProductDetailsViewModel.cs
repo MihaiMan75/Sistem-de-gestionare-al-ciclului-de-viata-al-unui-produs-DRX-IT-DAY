@@ -152,14 +152,17 @@ namespace WPF_UI.ViewModels
                     int seconds = duration.Seconds;
 
                     bool isExpected = sh.EndDate.HasValue && sh.EndDate > DateTime.Now;
+                    
 
                     string formattedDuration;
                     if (days > 0)
                         formattedDuration = $"{days}d{hours}h";
                     else if (hours > 0)
                         formattedDuration = $"{hours}h{minutes}m";
-                    else
+                    else if (seconds > 0)
                         formattedDuration = $"{minutes}m{seconds}s"; // Show seconds only for short durations
+                    else
+                        formattedDuration = $"Active";
 
                     return isExpected ? $"{formattedDuration} expected" : formattedDuration;
                 }).ToArray();
@@ -171,12 +174,18 @@ namespace WPF_UI.ViewModels
                     Name = "Stage Duration",
                     Fill = new SolidColorPaint(SKColors.RoyalBlue),
                     Stroke = null,
-                    MaxBarWidth = 30,
-                    DataLabelsSize = 12,
+                    MaxBarWidth = 45,
+                    DataLabelsSize = 18,
                     DataLabelsPaint = new SolidColorPaint(SKColors.Black),
                     DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
                     DataLabelsFormatter = point => durationLabels[point.Index]
                 };
+                Random random = new Random();
+                foreach (var sd in stageDurationSeries.Values)
+                {
+                    var randomColor = new SKColor((byte)random.Next(0, 257), (byte)random.Next(0, 257), (byte)random.Next(0, 257));
+                    stageDurationSeries.Fill = new SolidColorPaint(randomColor);
+                }
 
                 // Create an X Axis
                 var xAxis = new Axis
