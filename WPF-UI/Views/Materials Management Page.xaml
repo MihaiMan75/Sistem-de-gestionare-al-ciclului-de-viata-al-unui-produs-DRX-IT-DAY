@@ -93,15 +93,15 @@
                       Height="60"
                       Margin="0,5,0,10"/>
 
-                <TextBlock Text="Weight:"/>
+                <TextBlock Text="Weight(Kg):"/>
                 <TextBox Text="{Binding CurrentMaterial.Weight, UpdateSourceTrigger=PropertyChanged}"
                       Margin="0,5,0,10"/>
 
-                <TextBlock Text="Height:"/>
+                <TextBlock Text="Height(mm):"/>
                 <TextBox Text="{Binding CurrentMaterial.Height, UpdateSourceTrigger=PropertyChanged}"
                       Margin="0,5,0,10"/>
 
-                <TextBlock Text="Width:"/>
+                <TextBlock Text="Width(mm):"/>
                 <TextBox Text="{Binding CurrentMaterial.Width, UpdateSourceTrigger=PropertyChanged}"
                       Margin="0,5,0,10"/>
 

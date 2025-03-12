@@ -23,5 +23,17 @@ namespace BusinessLogic
             Admin = 1,
             User = 2
         };
+
+        public enum UCUM
+        {
+            // Quantity
+            Piece = 1,
+            // Length
+            Millimeter = 2,
+
+            // Weight
+            Kilogram = 3
+        }
+
     }
 }

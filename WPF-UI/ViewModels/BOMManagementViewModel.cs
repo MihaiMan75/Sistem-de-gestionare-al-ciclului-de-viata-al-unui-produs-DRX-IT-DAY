@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using WPF_UI.Interfaces;
+using BusinessLogic;
 using WPF_UI.Messages;
 
 namespace WPF_UI.ViewModels
@@ -41,7 +42,7 @@ namespace WPF_UI.ViewModels
         private string _unitMeasureToAdd;
 
         [ObservableProperty]
-        private ObservableCollection<int> _unitMeasures;
+        private ObservableCollection<string> _unitMeasures;
 
         [ObservableProperty]
         private BomDto _selectedBOM;
@@ -58,7 +59,7 @@ namespace WPF_UI.ViewModels
 
 
 
-        public BOMManagementViewModel(IServiceFactory serviceFactory,IAuthService authService, INavigationService navigationService)
+        public BOMManagementViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
             _serviceFactory = serviceFactory;
             _bomService = _serviceFactory.GetBomService();
@@ -67,7 +68,7 @@ namespace WPF_UI.ViewModels
             WeakReferenceMessenger.Default.Register<BomSelectedMessage>(this);
             LoadMaterialsCommand.Execute(null);
             BOMMaterials = new ObservableCollection<BomMaterialDto>();
-            UnitMeasures = new ObservableCollection<int> { 1, 2, 3, 4, 5 }; // Added values to the collection
+            UnitMeasures = new ObservableCollection<string>(Enum.GetNames(typeof(Enums.UCUM)));
             CurrentBOM = new BomDto();
             _navigationService = navigationService;
         }
@@ -111,7 +112,7 @@ namespace WPF_UI.ViewModels
            
             BOMMaterials.Add(bomMaterial);
             QuantityToAdd = 0;
-            UnitMeasureToAdd = string.Empty;
+           // UnitMeasureToAdd = string.Empty;
             SelectedMaterial = null;
         }
 

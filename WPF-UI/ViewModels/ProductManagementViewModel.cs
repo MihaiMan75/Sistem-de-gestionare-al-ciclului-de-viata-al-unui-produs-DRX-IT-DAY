@@ -15,6 +15,7 @@ using WPF_UI.Interfaces;
 using BusinessLogic;
 using CommunityToolkit.Mvvm.Messaging;
 using WPF_UI.Messages;
+using static BusinessLogic.Enums;
 
 namespace WPF_UI.ViewModels
 {
@@ -273,7 +274,28 @@ namespace WPF_UI.ViewModels
         public void Receive(BomSelectedMessage message)
         {
             CurrentProduct.ProductBom = message.Value;
-            //LoadBOMsCommand.Execute(null);
+            //bom loaded calculate the height and width wheight
+            // Initialize the estimated values
+            double estimatedHeight = 0;
+            double estimatedWidth = 0;
+            double estimatedWeight = 0;
+
+            foreach (var bomMaterial in message.Value.BomMaterials)
+            {
+                // Get the material details and quantity
+                var material = bomMaterial.Material;
+                var quantity = bomMaterial.Quantity;
+
+               
+             estimatedHeight += material.Height * quantity;
+             estimatedWidth += material.Width * quantity;
+             estimatedWeight += material.Weight * quantity;
+
+            }
+
+            CurrentProduct.EstimatedHeight = estimatedHeight;
+            CurrentProduct.EstimatedWidth = estimatedWidth;
+            CurrentProduct.EstimatedWeight = estimatedWeight;
         }
 
         public void Receive(ProductSelectedMessage message)

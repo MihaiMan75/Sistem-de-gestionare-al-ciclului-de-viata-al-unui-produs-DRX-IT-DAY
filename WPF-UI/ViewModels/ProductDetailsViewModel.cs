@@ -20,6 +20,7 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using System.Windows.Controls;
 
 namespace WPF_UI.ViewModels
 {
@@ -395,5 +396,6 @@ namespace WPF_UI.ViewModels
         {
             _navigationService.NavigateBack();
         }
+       
     }
 }

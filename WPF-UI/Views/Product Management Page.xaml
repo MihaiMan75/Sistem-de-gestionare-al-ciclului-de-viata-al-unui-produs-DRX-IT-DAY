@@ -82,16 +82,16 @@
                          TextWrapping="Wrap" Height="60"
                          Margin="0,5,0,10"/>
 
-                    <TextBlock Text="Height (cm):"/>
-                    <TextBox Text="{Binding CurrentProduct.EstimatedHeight, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Height (mm):"/>
+                    <TextBox Text="{Binding CurrentProduct.EstimatedHeight, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"
                          Margin="0,5,0,10"/>
 
-                    <TextBlock Text="Width (cm):"/>
-                    <TextBox Text="{Binding CurrentProduct.EstimatedWidth, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Width (mm):"/>
+                    <TextBox Text="{Binding CurrentProduct.EstimatedWidth, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"
                          Margin="0,5,0,10"/>
 
                     <TextBlock Text="Weight (kg):"/>
-                    <TextBox Text="{Binding CurrentProduct.EstimatedWeight, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Text="{Binding CurrentProduct.EstimatedWeight, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"
                          Margin="0,5,0,10"/>
 
                     <GroupBox Header="BOM Details" Padding="10" Margin="10">

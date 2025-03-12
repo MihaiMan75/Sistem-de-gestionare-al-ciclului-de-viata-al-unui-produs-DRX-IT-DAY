@@ -3,17 +3,18 @@
     <Style x:Key="GrayCustomButton" TargetType="Button">
         <!-- Base properties -->
         <Setter Property="FontFamily" Value="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontSize" Value="10"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="WhiteSmoke"/>
+        <Setter Property="Foreground" Value="#2d3436"/>
         <Setter Property="Padding" Value="16"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Opacity" Value="0.8"/>
+        <Setter Property="MinHeight" Value="25"/>
         <Setter Property="Background">
             <Setter.Value>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#b2bec3" Offset="0"/>
-                    <GradientStop Color="#636e72" Offset="1"/>
+                    <GradientStop Color="#dfe6e9" Offset="0"/>
+                    <GradientStop Color="#b2bec3" Offset="1"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>

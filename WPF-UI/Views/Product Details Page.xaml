@@ -17,8 +17,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" HorizontalAlignment="Left" >
+        <StackPanel Grid.Row="0" HorizontalAlignment="Left"  Orientation="Horizontal" >
             <Button Width="70" Height="30" Style="{StaticResource CustomButtonStyle}" Padding="10" Margin="10,0,10,0" Command="{Binding GoBackCommand}" >⬅️</Button>
+            <Button Width="70" Height="30" Style="{StaticResource CustomButtonStyle}" Padding="10" Margin="10,0,10,0" >PDF</Button>
+
         </StackPanel>
         <!-- Header with current stage and change stage button -->
         <Grid Grid.Row="1" Margin="0,0,0,20">
@@ -87,10 +89,10 @@
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                 <TextBlock Text="Height: "/>
                                 <TextBlock Text="{Binding CurrentProduct.EstimatedHeight}"/>
-                                <TextBlock Text=" cm  "/>
+                                <TextBlock Text=" mm "/>
                                 <TextBlock Text="Width: "/>
                                 <TextBlock Text="{Binding CurrentProduct.EstimatedWidth}"/>
-                                <TextBlock Text=" cm  "/>
+                                <TextBlock Text=" mm  "/>
                                 <TextBlock Text="Weight: "/>
                                 <TextBlock Text="{Binding CurrentProduct.EstimatedWeight}"/>
                                 <TextBlock Text=" kg"/>

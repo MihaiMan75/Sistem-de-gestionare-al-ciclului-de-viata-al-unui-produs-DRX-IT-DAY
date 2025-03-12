@@ -164,6 +164,10 @@ namespace BusinessLogic.Services
             if (product.StageHistory == null || !product.StageHistory.Any())
                 throw new ArgumentException("Product must have at least one stage in history.");
 
+            var totalWeight = product.ProductBom.BomMaterials.Sum(bm => bm.Quantity * bm.Material.Weight);
+            if (product.EstimatedWeight < totalWeight)
+                throw new ArgumentException("Estimated Weight must be greater than the total weight of the materials in the BOM.");
+
             if (product.Curentstage == null)
                 throw new ArgumentException("Current stage cannot be null.");
         }
