@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WPF_UI.Views"
+      xmlns:local="clr-namespace:WPF_UI.Views" xmlns:usercontrols="clr-namespace:WPF_UI.UserControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Reports_Page">
@@ -13,122 +13,136 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- Report Parameters -->
-        <GroupBox Header="Report Parameters" Grid.Row="0">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
+                   Text="Product Reports Generation" 
+                   FontSize="20" FontWeight="Bold" 
+                   Margin="0,0,0,20"/>
+
+        <!-- Left side - Available Products List -->
+        <GroupBox Header="Available Products" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Report Type -->
-                <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
-                    <TextBlock Text="Report Type:" Margin="0,0,0,5"/>
-                    <ComboBox ItemsSource="{Binding ReportTypes}"
-                             SelectedItem="{Binding SelectedReportType}"
-                             DisplayMemberPath="Name"
-                             Height="25"/>
-                </StackPanel>
+                <!-- Search Box -->
+                <usercontrols:CostumTextBoxWithEraseButton Grid.Row="0" Margin="5" Height="25" 
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         PlaceHodler="Search products..."/>
 
-                <!-- Date Range -->
-                <StackPanel Grid.Column="1" Grid.Row="0" Margin="5">
-                    <TextBlock Text="Start Date:" Margin="0,0,0,5"/>
-                    <DatePicker SelectedDate="{Binding StartDate}"
-                              Height="25"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="2" Grid.Row="0" Margin="5">
-                    <TextBlock Text="End Date:" Margin="0,0,0,5"/>
-                    <DatePicker SelectedDate="{Binding EndDate}"
-                              Height="25"/>
-                </StackPanel>
-
-                <!-- Additional Filters -->
-                <StackPanel Grid.Column="0" Grid.Row="1" Margin="5">
-                    <TextBlock Text="Stage:" Margin="0,0,0,5"/>
-                    <ComboBox ItemsSource="{Binding Stages}"
-                             SelectedItem="{Binding SelectedStage}"
-                             DisplayMemberPath="Name"
-                             Height="25"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1" Grid.Row="1" Margin="5">
-                    <TextBlock Text="User:" Margin="0,0,0,5"/>
-                    <ComboBox ItemsSource="{Binding Users}"
-                             SelectedItem="{Binding SelectedUser}"
-                             DisplayMemberPath="Name"
-                             Height="25"/>
-                </StackPanel>
-
-                <Button Grid.Column="2" 
-                        Grid.Row="1"
-                        Content="Apply Filters"
-                        Command="{Binding ApplyFiltersCommand}"
-                        Style="{StaticResource GrayCustomButton}"
-                        Height="25"
-                        Margin="5,23,5,0"/>
+                <!-- Available Products DataGrid -->
+                <DataGrid Grid.Row="1" Margin="5" 
+                          ItemsSource="{Binding AvailableProducts}"
+                          SelectedItem="{Binding SelectedAvailableProduct}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Current Stage" Binding="{Binding Curentstage.Name}" Width="*"/>
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Add" Command="{Binding DataContext.AddToReportCommand, 
+                                            RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource GrayCustomButton}"
+                                            Margin="2"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </GroupBox>
 
-        <!-- Report Preview -->
-        <GroupBox Header="Report Preview" Grid.Row="1" Margin="0,10">
+        <!-- Middle - Buttons to Transfer -->
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5">
+            <Button Content="▶" Command="{Binding AddToReportCommand}" 
+                    Style="{StaticResource CustomButtonStyle}"
+                    CommandParameter="{Binding SelectedAvailableProduct}"
+                    Margin="0,5" Width="40" Height="40"/>
+            <Button Content="▶▶" Command="{Binding AddAllToReportCommand}" 
+                    Style="{StaticResource CustomButtonStyle}"
+                    Margin="0,5" Width="40" Height="40"/>
+            <Button Content="◀" Command="{Binding RemoveFromReportCommand}" 
+                    Style="{StaticResource CustomButtonStyle}"
+                    CommandParameter="{Binding SelectedProductForReport}"
+                    Margin="0,5" Width="40" Height="40"/>
+            <Button Content="◀◀" Command="{Binding RemoveAllFromReportCommand}" 
+                    Style="{StaticResource CustomButtonStyle}"
+                    Margin="0,5" Width="40" Height="40"/>
+        </StackPanel>
+
+        <!-- Right side - Products for Report -->
+        <GroupBox Header="Products for Report" Grid.Row="1" Grid.Column="2" Margin="10,0,0,0">
             <Grid>
-                <DataGrid ItemsSource="{Binding ReportData}"
-                          AutoGenerateColumns="True"
-                          IsReadOnly="True"
-                          Margin="5"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <!-- Loading Indicator -->
-                <Grid Background="#80FFFFFF" >
-                    <StackPanel HorizontalAlignment="Center" 
-                              VerticalAlignment="Center">
-                        <TextBlock Text="Generating Preview..."
-                                 FontSize="16"
-                                 Margin="0,0,0,10"/>
-                        <ProgressBar IsIndeterminate="True"
-                                   Width="200"
-                                   Height="4"/>
+                <!-- Report Options -->
+                <StackPanel Grid.Row="0" Margin="5,5,5,10">
+                    <TextBlock Text="Report Options" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <CheckBox Content="Include Stage History" IsChecked="{Binding IncludeStageHistory}" Margin="0,0,15,0"/>
+                        <CheckBox Content="Include BOM Details" IsChecked="{Binding IncludeBOMDetails}" Margin="0,0,15,0"/>
+                        <CheckBox Content="Include Charts" IsChecked="{Binding IncludeCharts}" Margin="0,0,15,0"/>
                     </StackPanel>
-                </Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Report Title:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox Text="{Binding ReportTitle, UpdateSourceTrigger=PropertyChanged}" Width="300"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Products For Report DataGrid -->
+                <DataGrid Grid.Row="1" Margin="5" 
+                          ItemsSource="{Binding ProductsForReport}"
+                          SelectedItem="{Binding SelectedProductForReport}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Current Stage" Binding="{Binding Curentstage.Name}" Width="*"/>
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Remove" Command="{Binding DataContext.RemoveFromReportCommand, 
+                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource GrayCustomButton}"
+                                                Margin="2"/>
+                                        <Button Content="View" Command="{Binding DataContext.ViewProductCommand,
+                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource GrayCustomButton}"
+                                                Margin="2"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </GroupBox>
 
-        <!-- Export Options -->
-        <GroupBox Header="Export Options" Grid.Row="2">
-            <StackPanel Orientation="Horizontal" 
-                      HorizontalAlignment="Right"
-                      Margin="10">
-                <StackPanel Orientation="Horizontal" 
-                          VerticalAlignment="Center"
-                          Margin="0,0,20,0">
-                    <TextBlock Text="Include:" 
-                             VerticalAlignment="Center"
-                             Margin="0,0,10,0"/>
-                    <CheckBox Content="Charts" 
-                            IsChecked="{Binding IncludeCharts}"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"/>
-                    <CheckBox Content="Details" 
-                            IsChecked="{Binding IncludeDetails}"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"/>
-                    <CheckBox Content="Summary" 
-                            IsChecked="{Binding IncludeSummary}"
-                            VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <Button Content="Export to PDF"
-                        Command="{Binding ExportToPdfCommand}"
-                         Style="{StaticResource GrayCustomButton}"
-                        Width="120"
-                        Height="30"/>
-            </StackPanel>
-        </GroupBox>
+        <!-- Bottom - Generate Report Button -->
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" 
+                    Orientation="Horizontal" HorizontalAlignment="Right" 
+                    Margin="0,15,0,0">
+           
+            <Button Content="Generate Report" Command="{Binding GenerateReportCommand}" 
+                    Style="{StaticResource CustomButtonStyle}"
+                    Width="150"/>
+        </StackPanel>
     </Grid>
 </Page>

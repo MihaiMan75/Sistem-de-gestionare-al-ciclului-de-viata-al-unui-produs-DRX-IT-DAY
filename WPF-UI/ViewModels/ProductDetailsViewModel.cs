@@ -94,7 +94,7 @@ namespace WPF_UI.ViewModels
 
         }
 
-        private void SetupPieChart()
+        public void SetupPieChart()
         {
             if (BOMMaterials != null && BOMMaterials.Count > 0)
             {
@@ -128,7 +128,7 @@ namespace WPF_UI.ViewModels
             }
         }
 
-        private void SetupStageHistoryChart()
+        public void SetupStageHistoryChart()
         {
             if (StageHistory != null && StageHistory.Count > 0)
             {
@@ -389,6 +389,12 @@ namespace WPF_UI.ViewModels
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public void LoadProduct(ProductDto product)
+        {
+            CurrentProduct = product;
+            LoadProductDetails();
         }
 
         [RelayCommand]
