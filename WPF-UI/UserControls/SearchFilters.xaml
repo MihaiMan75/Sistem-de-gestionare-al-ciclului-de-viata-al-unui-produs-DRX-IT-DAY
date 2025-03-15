@@ -58,7 +58,7 @@
 
             <!-- Stage -->
             <TextBlock Text="Stage :" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" Margin="5" />
-            <ComboBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}"
+            <ComboBox Text="{Binding Stage, UpdateSourceTrigger=PropertyChanged}"
              Grid.Row="2" Grid.Column="1" FontFamily="/Fonts/Comfortaa-VariableFont_wght.ttf #Comfortaa" 
              Margin="5">
                 <ComboBoxItem Content="1" Tag="1" />

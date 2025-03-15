@@ -46,6 +46,13 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private string _curentStage = "Design";
 
+        [ObservableProperty]
+        private bool _allowedToDelete= false;
+        [ObservableProperty]
+        private UserDto _currentUser;
+        private int adminRoleId = 6;
+        private int creatorRoleId = 1;
+
         //[ObservableProperty]
         //private ObservableCollection<BomDto> _bOMs;
 
@@ -66,9 +73,15 @@ namespace WPF_UI.ViewModels
             LoadProductsCommand.Execute(null);
             EndDate = DateTime.Now;
             //LoadBOMsCommand.Execute(null);
-            
+            CurrentUser= authService.CurrentUser;
 
-            //test
+            CurrentUser.Roles.ForEach(role =>
+            {
+                if (role.Id == adminRoleId)
+                {
+                    AllowedToDelete = true;
+                }
+            });
             CurrentProduct = new ProductDto();
             CurrentProduct.Id = 0;
         }
@@ -94,9 +107,6 @@ namespace WPF_UI.ViewModels
             {
                 var products = await _productService.GetAllProductsAsync();
                 Products = new ObservableCollection<ProductDto>(products);
-
-                //debug
-                MessageBox.Show("Products loaded");
             }
             catch (Exception ex)
             {
@@ -104,27 +114,17 @@ namespace WPF_UI.ViewModels
             }
         }
 
-        //[RelayCommand]
-        //private async Task LoadBOMs()
-        //{
-        //    try
-        //    {
-        //        var boms = await _bomService.GetAllBomsAsync();
-        //        BOMs = new ObservableCollection<BomDto>(boms);
-        //        if(_recivedBOM != null)
-        //        {
-        //            CurrentProduct.ProductBom = _recivedBOM;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine($"Error loading BOMs: {ex.Message}");
-        //    }
-        //}
-
         [RelayCommand]
         private async Task Save()
         {
+            //test if the user is able to create products
+            bool result = CurrentUser.Roles.Any(role => role.Id == adminRoleId || role.Id == creatorRoleId);
+            if (!result)
+            {
+                MessageBox.Show("You are not allowed to create products", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             try
             {
                 var existingProduct = await _productService.GetProductByIdAsync(CurrentProduct.Id);
@@ -287,9 +287,34 @@ namespace WPF_UI.ViewModels
                 var quantity = bomMaterial.Quantity;
 
                
-             estimatedHeight += material.Height * quantity;
-             estimatedWidth += material.Width * quantity;
-             estimatedWeight += material.Weight * quantity;
+                if(bomMaterial.UnitMeasureCode.Equals(UCUM.Millimeter))
+                {
+                    estimatedHeight += material.Height * quantity;
+                    estimatedWidth += material.Width * quantity;
+                    //weight in function of the height and width
+                    //get material gram to mm ratio
+                    double ratio = material.Weight / (material.Height * material.Width);
+                    estimatedWeight += material.Weight * quantity * ratio;
+
+                }
+                else if (bomMaterial.UnitMeasureCode.Equals(UCUM.Grams))
+                {
+                    estimatedWeight += material.Weight * quantity;
+                    //height and width in function on the weight to height and width ratio
+                    //get material gram to mm ratio
+                    double ratio = material.Weight / (material.Height * material.Width);
+                    estimatedHeight += material.Height * quantity * ratio;
+                    estimatedWidth += material.Width * quantity * ratio;    
+
+                }
+                else
+                {//pieces
+                        estimatedHeight += material.Height * quantity;
+                        estimatedWidth += material.Width * quantity;
+                        estimatedWeight += material.Weight * quantity;
+                }
+
+
 
             }
 

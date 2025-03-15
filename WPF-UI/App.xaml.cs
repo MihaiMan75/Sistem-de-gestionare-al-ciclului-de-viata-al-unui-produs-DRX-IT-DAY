@@ -22,7 +22,7 @@ namespace WPF_UI
         public App()
         {
             _navigationStore = new NavigationStore();
-            _dbContext = new DbContext("Data Source=LAPTOPDELL;Initial Catalog=DRXITDAY_TEST;Integrated Security=True;TrustServerCertificate=True"); // Momentarily hardcoded connection string
+            _dbContext = new DbContext("Data Source=LAPTOPDELL;Initial Catalog=DRXItDay;Integrated Security=True;TrustServerCertificate=True"); // Momentarily hardcoded connection string
             _serviceFactory = new ServiceFactory(_dbContext);
         }
 

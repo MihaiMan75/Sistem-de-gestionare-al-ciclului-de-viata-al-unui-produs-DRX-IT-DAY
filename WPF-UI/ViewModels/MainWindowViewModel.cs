@@ -31,7 +31,15 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private string _userRole;
 
+        [ObservableProperty]
+        private bool _isLogged = false;
 
+        [ObservableProperty]
+        private bool _allowedToManageProducts = false;
+        [ObservableProperty]
+        private bool _allowedToManageMaterials = false;
+        [ObservableProperty]
+        private bool _allowedToManageUsers = false;
 
 
         public MainWindowViewModel(NavigationStore NavigationStore,IServiceFactory serviceFactory)
@@ -51,6 +59,7 @@ namespace WPF_UI.ViewModels
 
         private void UpdateUserInfo(UserDto user)
         {
+            ResesetAllowedActions();
             if (user != null)
             {
                 UserName = user.Name;
@@ -61,12 +70,47 @@ namespace WPF_UI.ViewModels
                     UserRole += role.RoleName + ", ";
                 }
                 UserRole = UserRole.Substring(0, UserRole.Length - 2);
+                IsLogged = true;
+                //depeing of the roles we can set the allowed actions
+                RefreshAllowedActions(roles);
             }
             else
             {
                 UserName = "Not Logged in";
                 UserRole = "None";
+                IsLogged = false;
             }
+        }
+
+        private void RefreshAllowedActions(List<RoleDto> roles)
+        {
+            var adminRoleId = 6;
+            var productRoles = new List<int> { 1, 2, 3 };
+            var materialRoles = new List<int> { 2, 4 };
+
+            foreach (var role in roles)
+            {
+                switch (role.Id)
+                {
+                    case 6: // Admin
+                        AllowedToManageProducts = true;
+                        AllowedToManageMaterials = true;
+                        AllowedToManageUsers = true;
+                        return;
+                    default:
+                        if (productRoles.Contains(role.Id)) AllowedToManageProducts = true;
+                        if (materialRoles.Contains(role.Id)) AllowedToManageMaterials = true;
+                        break;
+                }
+
+            }
+        }
+
+        private void ResesetAllowedActions()
+        {
+            AllowedToManageProducts = false;
+            AllowedToManageMaterials = false;
+            AllowedToManageUsers = false;
         }
 
         private void OnCurrentViewModelChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

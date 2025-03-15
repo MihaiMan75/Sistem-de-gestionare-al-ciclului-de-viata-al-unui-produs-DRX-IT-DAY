@@ -9,12 +9,11 @@
                 <ResourceDictionary Source="Styles/CustomButtonStyle.xaml"/>
                 <ResourceDictionary Source="Styles/TransparentButton.xaml"/>
                 <ResourceDictionary Source="Styles/GrayCostumButton.xaml"/>
-
-
                 <ResourceDictionary>
                     <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
+                    <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                    <converters:StringToColorConverter x:Key="StringToColorConverter"/>
                 </ResourceDictionary>
-                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

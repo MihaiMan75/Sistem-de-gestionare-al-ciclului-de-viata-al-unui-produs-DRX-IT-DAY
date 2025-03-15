@@ -59,8 +59,6 @@ namespace WPF_UI.ViewModels
                 var users = await _userService.GetAllUsersAsync();
                 Users = new ObservableCollection<UserDto>(users);
 
-                //debugging
-                MessageBox.Show("Users Loaded");
             }
             catch (Exception ex)
             {

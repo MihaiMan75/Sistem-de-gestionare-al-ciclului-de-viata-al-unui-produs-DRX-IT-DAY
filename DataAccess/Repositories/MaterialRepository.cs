@@ -32,17 +32,17 @@ namespace DataAccess.Repositories
         VALUES 
             (
              @material_description,
-             @height,
-             @width, 
-             @weight);";
+            @weight,
+            @width,
+            @height);";
 
                 return await connection.QuerySingleAsync<int>(sql, new
                 {
                     
                     entity.material_description,
+                    entity.weight,
                     entity.height,
-                    entity.width,
-                    entity.weight
+                    entity.width  
                 });
             }
         }

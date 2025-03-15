@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using WPF_UI.Interfaces;
 using WPF_UI.Messages;
 using WPF_UI.Wrappers;
@@ -32,6 +33,10 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private string _searchText;
 
+        [ObservableProperty]
+        private bool _allowedToManageProducts = false;
+
+       private List<int> allowedToCreateProducIds = new List<int> { 1, 6 }; //creator concept (1) and admin (6)
 
         public UserDashboardViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
@@ -41,7 +46,14 @@ namespace WPF_UI.ViewModels
 
             Products = new ObservableCollection<ProductDtoWithProgress>();
             FilteredProducts = new ObservableCollection<ProductDtoWithProgress>();
-
+           foreach(var role in authService.CurrentUser.Roles)
+            {
+                if (allowedToCreateProducIds.Contains(role.Id) )
+                {
+                    AllowedToManageProducts = true;
+                    break;
+                }
+            }
             // Load products when the ViewModel is created
             LoadProductsCommand.Execute(null);
         }
@@ -131,18 +143,24 @@ namespace WPF_UI.ViewModels
 
         private int CalculateStageProgress(int stageId)
         {
-            // Map stage IDs to progress values (0-4)
+            // Map stage IDs to progress values (1-7)
             // Assuming the stages progress from Design (1) to a final stage
             // Modify this mapping based on your actual stage progression
             switch (stageId)
             {
-                case 1: // Design
+                case 1: // 'Concept'
+                    return 0;
+                case 2: // 'Fezabilitate'
                     return 1;
-                case 2: // Production
+                case 3: // 'Proiectare' 
                     return 2;
-                case 3: // Testing
+                case 4: // 'Productie'
                     return 3;
-                case 4: // Deployment
+                case 5: // 'Retragere'  
+                    return 4;
+                case 6: //'Stand by'
+                    return 4;
+                case 7: // 'Cancel'
                     return 4;
                 default:
                     return 0;

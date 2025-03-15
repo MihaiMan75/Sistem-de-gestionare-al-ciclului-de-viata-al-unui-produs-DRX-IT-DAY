@@ -30,9 +30,8 @@ namespace BusinessLogic
             Piece = 1,
             // Length
             Millimeter = 2,
-
             // Weight
-            Kilogram = 3
+            Grams = 3
         }
 
     }

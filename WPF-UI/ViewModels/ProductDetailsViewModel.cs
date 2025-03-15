@@ -54,7 +54,7 @@ namespace WPF_UI.ViewModels
         private string _nextStage = "null";
 
         [ObservableProperty]
-        private Visibility _buttonVisibility = Visibility.Visible;
+        private Visibility _stageUpButtonVisibility = Visibility.Visible;
 
         [ObservableProperty]
         private DateTime _endDate;
@@ -74,6 +74,10 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private IEnumerable<Axis> _yAxes;
 
+        [ObservableProperty]
+        private UserDto _currentUser;
+
+
 
         private readonly IServiceFactory _serviceFactory;
         public ProductDetailsViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
@@ -88,12 +92,174 @@ namespace WPF_UI.ViewModels
             // LoadStagesCommand.Execute(null);
             WeakReferenceMessenger.Default.Register<ProductSelectedMessage>(this);
             _navigationService = navigationService;
+            CurrentUser = authService.CurrentUser;
 
             SetupPieChart();
             SetupStageHistoryChart();
 
         }
 
+
+        [RelayCommand]
+        private async Task LoadStages()
+        {
+            EndDate = DateTime.Now;
+            try
+            {
+                stages = (List<StageDto>)await _stageService.GetAllStagesAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public async Task LoadProductDetails()
+        {
+            try
+            {
+
+
+                var currentDate = DateTime.Now;
+                CurrentStage = CurrentProduct.Curentstage;
+
+                // Convert ProductStageHistoryDto objects to ProductStageHistoryViewModel objects
+                StageHistory = new ObservableCollection<ProductStageHistoryViewModel>(
+                    CurrentProduct.StageHistory.Select(dto => new ProductStageHistoryViewModel(dto))
+                );
+
+                //if the end time is = to the start time then the stage is active
+                BOMMaterials = new ObservableCollection<BomMaterialDto>(CurrentProduct.ProductBom.BomMaterials);
+
+                // Find the most recent stage history and wrap it
+                var latestHistoryDto = CurrentProduct.StageHistory
+                    .Where(stage => stage.StartDate <= currentDate)
+                    .OrderByDescending(stage => stage.StartDate)
+                    .FirstOrDefault();
+
+                if (latestHistoryDto != null)
+                {
+                    CurrentStageHistory = new ProductStageHistoryViewModel(latestHistoryDto);
+                }
+
+
+
+                await LoadNextStage();
+                SetupPieChart();
+                SetupStageHistoryChart();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        
+        private async Task LoadNextStage()
+        {
+            if (stages.Count <= 0)
+            {
+                await LoadStages();
+            }
+
+            if (stages.Count <= CurrentStage.Id)
+            {
+                NextStage = CurrentStage.Name;
+            }
+            else
+            {
+                NextStage = stages[CurrentStage.Id].Name; //Always goes one stage up
+            }
+        }
+
+        public void Receive(ProductSelectedMessage message)
+        {
+            var Product = message.Value;
+            if (Product != null)
+            {
+
+                CurrentProduct = Product;
+                LoadProductDetails();
+            }
+        }
+
+        [RelayCommand]
+        public async Task ChangeStage()
+        {
+            //check if user is able to move the product to the next stage
+
+            try
+            {
+                StageDto stage;
+                var currentStageIndex = CurrentStage.Id;
+
+                if (currentStageIndex < stages.Count)
+                {
+                    stage = stages[currentStageIndex];
+                }
+                else
+                {
+                    StageUpButtonVisibility = Visibility.Collapsed;
+                    return;
+                }
+
+                if (EndDate < DateTime.Now)
+                {
+                    EndDate = DateTime.Now;
+                }
+
+                // Update the current stage endDate
+                if (CurrentStageHistory != null)
+                {
+                    CurrentStageHistory.EndDate = DateTime.Now;
+                    await _productStageHistoryService.UpdateProductStageHistoryAsync(
+                        CurrentStageHistory.GetDto(), CurrentProduct.Id);
+                }
+
+                // Create a new history entry
+                var newHistoryDto = new ProductStageHistoryDto
+                {
+                    ProductStage = stage,
+                    StartDate = DateTime.Now,
+                    User = _authService.CurrentUser,
+                    EndDate = EndDate
+                };
+
+                await _productService.AddProductStageAsync(CurrentProduct, newHistoryDto);
+                CurrentProduct.StageHistory.Add(newHistoryDto);
+
+                // Update the UI collection by finding and updating the wrapped object
+                var updatedStageHistory = StageHistory.FirstOrDefault(sh =>
+                    sh.ProductStage.Id == CurrentStage.Id);
+
+                if (updatedStageHistory != null)
+                {
+                    updatedStageHistory.EndDate = DateTime.Now;
+                }
+
+                // Add the new history item as a wrapped object
+                StageHistory.Add(new ProductStageHistoryViewModel(newHistoryDto));
+
+                CurrentProduct.Curentstage = stage;
+                CurrentStage = stage;
+                CurrentStageHistory = StageHistory.Last();
+
+                await LoadNextStage();
+                SetupStageHistoryChart();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public void LoadProduct(ProductDto product)
+        {
+            CurrentProduct = product;
+            LoadProductDetails();
+        }
+
+        #region "Charts"
         public void SetupPieChart()
         {
             if (BOMMaterials != null && BOMMaterials.Count > 0)
@@ -153,7 +319,7 @@ namespace WPF_UI.ViewModels
                     int seconds = duration.Seconds;
 
                     bool isExpected = sh.EndDate.HasValue && sh.EndDate > DateTime.Now;
-                    
+
 
                     string formattedDuration;
                     if (days > 0)
@@ -240,162 +406,7 @@ namespace WPF_UI.ViewModels
                 YAxes = new Axis[] { new Axis { Name = "Duration (Days)" } };
             }
         }
-
-
-        [RelayCommand]
-        private async Task LoadStages()
-        {
-            EndDate = DateTime.Now;
-            try
-            {
-                stages = (List<StageDto>)await _stageService.GetAllStagesAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        public async Task LoadProductDetails()
-        {
-            try
-            {
-
-
-                var currentDate = DateTime.Now;
-                CurrentStage = CurrentProduct.Curentstage;
-
-                // Convert ProductStageHistoryDto objects to ProductStageHistoryViewModel objects
-                StageHistory = new ObservableCollection<ProductStageHistoryViewModel>(
-                    CurrentProduct.StageHistory.Select(dto => new ProductStageHistoryViewModel(dto))
-                );
-
-                //if the end time is = to the start time then the stage is active
-                BOMMaterials = new ObservableCollection<BomMaterialDto>(CurrentProduct.ProductBom.BomMaterials);
-
-                // Find the most recent stage history and wrap it
-                var latestHistoryDto = CurrentProduct.StageHistory
-                    .Where(stage => stage.StartDate <= currentDate)
-                    .OrderByDescending(stage => stage.StartDate)
-                    .FirstOrDefault();
-
-                if (latestHistoryDto != null)
-                {
-                    CurrentStageHistory = new ProductStageHistoryViewModel(latestHistoryDto);
-                }
-
-
-
-                await LoadNextStage();
-                SetupPieChart();
-                SetupStageHistoryChart();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private async Task LoadNextStage()
-        {
-            if (stages.Count <= 0)
-            {
-                await LoadStages();
-            }
-
-            if (stages.Count <= CurrentStage.Id)
-            {
-                NextStage = CurrentStage.Name;
-            }
-            else
-            {
-                NextStage = stages[CurrentStage.Id].Name;
-            }
-        }
-        public void Receive(ProductSelectedMessage message)
-        {
-            var Product = message.Value;
-            if (Product != null)
-            {
-
-                CurrentProduct = Product;
-                LoadProductDetails();
-            }
-        }
-
-        [RelayCommand]
-        public async Task ChangeStage()
-        {
-            try
-            {
-                StageDto stage;
-                var currentStageIndex = CurrentStage.Id;
-
-                if (currentStageIndex < stages.Count)
-                {
-                    stage = stages[currentStageIndex];
-                }
-                else
-                {
-                    ButtonVisibility = Visibility.Collapsed;
-                    return;
-                }
-
-                if (EndDate < DateTime.Now)
-                {
-                    EndDate = DateTime.Now;
-                }
-
-                // Update the current stage endDate
-                if (CurrentStageHistory != null)
-                {
-                    CurrentStageHistory.EndDate = DateTime.Now;
-                    await _productStageHistoryService.UpdateProductStageHistoryAsync(
-                        CurrentStageHistory.GetDto(), CurrentProduct.Id);
-                }
-
-                // Create a new history entry
-                var newHistoryDto = new ProductStageHistoryDto
-                {
-                    ProductStage = stage,
-                    StartDate = DateTime.Now,
-                    User = _authService.CurrentUser,
-                    EndDate = EndDate
-                };
-
-                await _productService.AddProductStageAsync(CurrentProduct, newHistoryDto);
-                CurrentProduct.StageHistory.Add(newHistoryDto);
-
-                // Update the UI collection by finding and updating the wrapped object
-                var updatedStageHistory = StageHistory.FirstOrDefault(sh =>
-                    sh.ProductStage.Id == CurrentStage.Id);
-
-                if (updatedStageHistory != null)
-                {
-                    updatedStageHistory.EndDate = DateTime.Now;
-                }
-
-                // Add the new history item as a wrapped object
-                StageHistory.Add(new ProductStageHistoryViewModel(newHistoryDto));
-
-                CurrentProduct.Curentstage = stage;
-                CurrentStage = stage;
-                CurrentStageHistory = StageHistory.Last();
-
-                await LoadNextStage();
-                SetupStageHistoryChart();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        public void LoadProduct(ProductDto product)
-        {
-            CurrentProduct = product;
-            LoadProductDetails();
-        }
+        #endregion
 
         [RelayCommand]
         public void GoBack()

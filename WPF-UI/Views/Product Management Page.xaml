@@ -53,6 +53,7 @@
                                         <Button Content="Delete" Command="{Binding DataContext.DeleteCommand,
                                                 RelativeSource={RelativeSource AncestorType=Page}}"
                                                 CommandParameter="{Binding}"
+                                                Visibility="{Binding AllowedToDelete,Converter={StaticResource BooleanToVisibilityConverter}}"
                                                  Style="{StaticResource GrayCustomButton}"
                                                 Margin="2"/>
                                         <Button Content="View" Command="{Binding DataContext.ViewCommand,
@@ -83,15 +84,15 @@
                          Margin="0,5,0,10"/>
 
                     <TextBlock Text="Height (mm):"/>
-                    <TextBox Text="{Binding CurrentProduct.EstimatedHeight, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"
+                    <TextBox Text="{Binding CurrentProduct.EstimatedHeight, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Background="LightGray"
                          Margin="0,5,0,10"/>
 
                     <TextBlock Text="Width (mm):"/>
-                    <TextBox Text="{Binding CurrentProduct.EstimatedWidth, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"
+                    <TextBox Text="{Binding CurrentProduct.EstimatedWidth, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Background="LightGray"
                          Margin="0,5,0,10"/>
 
-                    <TextBlock Text="Weight (kg):"/>
-                    <TextBox Text="{Binding CurrentProduct.EstimatedWeight, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"
+                    <TextBlock Text="Weight (g):"/>
+                    <TextBox Text="{Binding CurrentProduct.EstimatedWeight, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Background="LightGray"
                          Margin="0,5,0,10"/>
 
                     <GroupBox Header="BOM Details" Padding="10" Margin="10">

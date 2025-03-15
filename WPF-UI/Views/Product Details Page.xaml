@@ -53,14 +53,25 @@
                 </StackPanel>
             </StackPanel>
 
-
-            <Button Grid.Column="1" 
-            Content="Stage ++" 
-            Style="{StaticResource CustomButtonStyle}"
-            Command="{Binding ChangeStageCommand}"
-            Width="120"
-            Height="30"
-            Visibility="{Binding ButtonVisibility}"/>
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+                <Button Grid.Column="1" 
+                        Content="{Binding NextStage}" 
+                        Style="{StaticResource CustomButtonStyle}"
+                        Command="{Binding ChangeStageCommand}"
+                        Width="120"
+                        Height="30"
+                        Visibility="{Binding StageUpButtonVisibility}"/>
+                
+                <Button Grid.Column="1"
+                    Margin="0,10,0,0"
+                    Content="Cancel Product" 
+                    Style="{StaticResource GrayCustomButton}"
+                    Command="{Binding CancelProductCommand}"
+                    Width="120"
+                    Height="30"
+                    Visibility="{Binding CancelButtonVisibility}"/>
+            </StackPanel>
+            
         </Grid>
 
         <!-- Main Content -->
@@ -95,7 +106,7 @@
                                 <TextBlock Text=" mm  "/>
                                 <TextBlock Text="Weight: "/>
                                 <TextBlock Text="{Binding CurrentProduct.EstimatedWeight}"/>
-                                <TextBlock Text=" kg"/>
+                                <TextBlock Text=" g"/>
                             </StackPanel>
                                 <lvc:PieChart
                                 Series="{Binding MaterialsSeries}"
