@@ -8,7 +8,6 @@ namespace BusinessLogic
 {
     public static class Enums
     {
-        //Maybe populate them from the db
         public enum Stage
         {
             Design = 1,
