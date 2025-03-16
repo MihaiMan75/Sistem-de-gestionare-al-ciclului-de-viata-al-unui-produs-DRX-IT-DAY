@@ -10,7 +10,7 @@ This repository contains the application developed by **Mihai** and **Teo** as p
   - **BusinessLogic Layer**: Manages application logic and processes.
   - **UI Layer**: Provides a user-friendly interface.
 - Database integration:
-  - **SQL Server LocalDB** (with a `.mdf` file for portability).
+  - **SQL Server **
 
 ## Team
 - **Mihai**: Focused on architecture, MVVM implementation, and UI design.
@@ -22,5 +22,12 @@ This project was developed for the **Dräxlmaier IT Day 2025**, under the theme 
 ## Getting Started
 1. Clone this repository.
 2. Open the solution in **Visual Studio 2022**.
-3. Ensure **SQL Server LocalDB** is installed.
-4. Build and run the project.
+3. Ensure **SQL Server LocalDB** is installed & run the Database Creation script.
+5. Build and run the project.
+6. Once the connectionSettings.json file is created, navigate to the project directory and locate the file in either the Debug or Release folder.
+7. Insert the correct connection string into connectionSettings.json.
+8. Run the project again, this will create an admin account automatically.
+
+
+
+   
