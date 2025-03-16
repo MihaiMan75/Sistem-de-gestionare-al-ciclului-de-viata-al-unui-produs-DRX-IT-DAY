@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Interfaces
 {
-    public interface IProductStageHistoryService // Not Final Implementation, this may be a flawed design
+    public interface IProductStageHistoryService 
     {
         Task<IEnumerable<ProductStageHistoryDto>> GetAllProductsHistoryAsync();
         Task<ProductStageHistoryDto> GetProductStageHistoryByIdAsync(int productId,int stageId);
