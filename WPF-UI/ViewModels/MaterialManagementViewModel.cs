@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Media3D;
 using WPF_UI.Interfaces;
 
@@ -139,7 +140,11 @@ namespace WPF_UI.ViewModels
         private async Task Delete(MaterialDto material)
         {
             if (material == null) return;
-
+            var answ = MessageBox.Show("Are you sure you want to delete this Materil?", "Delete Material", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (answ == MessageBoxResult.No)
+            {
+                return;
+            }
             try
             {
                 // Could add confirmation dialog here

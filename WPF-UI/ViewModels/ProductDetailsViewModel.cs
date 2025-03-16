@@ -366,21 +366,47 @@ namespace WPF_UI.ViewModels
         #region "Charts"
         public void SetupPieChart()
         {
+
             if (BOMMaterials != null && BOMMaterials.Count > 0)
             {
-                MaterialsSeries = BOMMaterials
+                var weightSeries = BOMMaterials
                     .GroupBy(m => m.Material.MaterialDescription)
-                    .Select(g => new LiveChartsCore.SkiaSharpView.PieSeries<double>
+                    .Select(g =>
                     {
-                        Values = new[] { g.Sum(m => m.Quantity) },
-                        Name = $"{g.Key}",
-                        //InnerRadius = 50
+                        double totalWeight = 0;
+                        foreach (var bomMaterial in g)
+                        {
+                            var material = bomMaterial.Material;
+                            var quantity = bomMaterial.Quantity;
+
+                            if (bomMaterial.UnitMeasureCode.Equals(UCUM.Millimeter))
+                            {
+                                double ratio = material.Weight / (material.Height * material.Width);
+                                totalWeight += material.Weight * quantity * ratio;
+                            }
+                            else if (bomMaterial.UnitMeasureCode.Equals(UCUM.Grams))
+                            {
+                                totalWeight += material.Weight * quantity;
+                            }
+                            else
+                            {
+                                totalWeight += material.Weight * quantity;
+                            }
+                        }
+
+                        return new LiveChartsCore.SkiaSharpView.PieSeries<double>
+                        {
+                            Values = new[] { totalWeight },
+                            Name = $"{g.Key} (g)",
+                        };
                     })
                     .ToArray();
 
+                MaterialsSeries = weightSeries;
+
                 MaterialPieTitle = new LabelVisual
                 {
-                    Text = "Materials Distribution",
+                    Text = "Weight Distribution",
                     TextSize = 20,
                     Padding = new LiveChartsCore.Drawing.Padding(15)
                 };
@@ -396,6 +422,7 @@ namespace WPF_UI.ViewModels
                     Padding = new LiveChartsCore.Drawing.Padding(15)
                 };
             }
+
         }
 
         public void SetupStageHistoryChart()

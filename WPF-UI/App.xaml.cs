@@ -35,7 +35,7 @@ namespace WPF_UI
                 "Also, ensure that the database is properly set up.",
                 "Missing Connection String", MessageBoxButton.OK, MessageBoxImage.Warning);
 
-                Application.Current.Shutdown(); 
+                //Application.Current.Shutdown(); 
                 return;
             }
                 _navigationStore = new NavigationStore();
@@ -57,7 +57,7 @@ namespace WPF_UI
                 "Please add it to the connection string and restart the application.",
                 "Missing Connection String Setting", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                Application.Current.Shutdown();
+                //Application.Current.Shutdown();
                 return;
             }
 

@@ -222,6 +222,12 @@ namespace WPF_UI.ViewModels
         {
             if (product == null) return;
 
+            var answ = MessageBox.Show("Are you sure you want to delete this Product?", "Delete Product", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (answ == MessageBoxResult.No)
+            {
+                return;
+            }
+
             try
             {
                 // Could add confirmation dialog here
