@@ -14,7 +14,9 @@ using System.Windows;
 using System.Windows.Data;
 using WPF_UI.Interfaces;
 using WPF_UI.Messages;
+using WPF_UI.Services;
 using WPF_UI.Wrappers;
+using static BusinessLogic.Enums;
 
 namespace WPF_UI.ViewModels
 {
@@ -36,7 +38,13 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private bool _allowedToManageProducts = false;
 
-       private List<int> allowedToCreateProducIds = new List<int> { 1, 6 }; //creator concept (1) and admin (6)
+        [ObservableProperty]
+        private string _showAllProductsText = "Show all products";
+
+        private bool _showAllProducts = false;
+        private UserDto _currentUser;
+
+        private List<int> allowedToCreateProducIds = new List<int> { 1, 6 }; //creator concept (1) and admin (6)
 
         public UserDashboardViewModel(IServiceFactory serviceFactory, IAuthService authService, INavigationService navigationService)
         {
@@ -54,8 +62,10 @@ namespace WPF_UI.ViewModels
                     break;
                 }
             }
+            _currentUser = authService.CurrentUser;
             // Load products when the ViewModel is created
             LoadProductsCommand.Execute(null);
+
         }
 
 
@@ -63,7 +73,7 @@ namespace WPF_UI.ViewModels
         {
             FilterProducts();
         }
-
+        
         [RelayCommand]
         private async Task LoadProducts()
         {
@@ -96,16 +106,55 @@ namespace WPF_UI.ViewModels
 
         }
 
+        [RelayCommand]
+        private void ShowAll()
+        {
+            _showAllProducts = !_showAllProducts;
+            FilterProducts();
+            if(_showAllProducts)
+            {
+                ShowAllProductsText = "Show my products";
+            }
+            else
+            {
+                ShowAllProductsText = "Show all products";
+            }
+        }
+
         private void FilterProducts()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
+            //filter in function of the user role
+
+           if(_showAllProducts)
             {
                 FilteredProducts = new ObservableCollection<ProductDtoWithProgress>(Products);
+        
+            }
+            else
+            {
+                //filter in function of the user role
+                //foreach role add the products that the user can see into a collection using the PermissionService
+                FilteredProducts = new ObservableCollection<ProductDtoWithProgress>();
+
+                    foreach (ProductDtoWithProgress product in Products)
+                    {
+                       if(PermissionService.HasPermission(_currentUser, (Stages)product.Curentstage.Id))
+                        {
+                            FilteredProducts.Add(product);
+                        }
+                    }
+
+            }
+
+            //search bar filter
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+  
                 return;
             }
 
             var searchTerm = SearchText.ToLower();
-            var filtered = Products.Where(p =>
+            var filtered = FilteredProducts.Where(p =>
                 (p.Name?.ToLower().Contains(searchTerm) ?? false) ||
                 (p.Description?.ToLower().Contains(searchTerm) ?? false)).ToList();
 
@@ -157,11 +206,11 @@ namespace WPF_UI.ViewModels
                 case 4: // 'Productie'
                     return 3;
                 case 5: // 'Retragere'  
-                    return 4;
+                    return 5;
                 case 6: //'Stand by'
-                    return 4;
+                    return 6;
                 case 7: // 'Cancel'
-                    return 4;
+                    return 7;
                 default:
                     return 0;
             }

@@ -19,6 +19,9 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using LiveChartsCore;
 using System.IO;
 using LiveChartsCore.SkiaSharpView.Painting;
+using static BusinessLogic.Enums;
+using WPF_UI.Services;
+using WPF_UI.Wrappers;
 
 namespace WPF_UI.ViewModels
 {
@@ -27,6 +30,7 @@ namespace WPF_UI.ViewModels
         private readonly IProductService _productService;
         private readonly IServiceFactory _serviceFactory;
         private readonly INavigationService _navigationService;
+        private readonly IAuthService _authService;
 
         [ObservableProperty]
         private string _searchText;
@@ -51,6 +55,14 @@ namespace WPF_UI.ViewModels
 
         [ObservableProperty]
         private bool _includeCharts = true;
+        [ObservableProperty]
+        private ObservableCollection<ProductDto> _filteredProducts;
+
+        [ObservableProperty]
+        private string _showAllProductsText = "Show all products";
+
+        private bool _showAllProducts = false;
+        private UserDto _currentUser;
 
         [ObservableProperty]
         private string _reportTitle = "Product Status Report";
@@ -60,6 +72,8 @@ namespace WPF_UI.ViewModels
             _serviceFactory = serviceFactory;
             _navigationService = navigationService;
             _productService = _serviceFactory.GetProductService();
+            _authService = authService;
+            _currentUser = _authService.CurrentUser;
 
             AvailableProducts = new ObservableCollection<ProductDto>();
             ProductsForReport = new ObservableCollection<ProductDto>();
@@ -69,19 +83,65 @@ namespace WPF_UI.ViewModels
 
         partial void OnSearchTextChanged(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            FilterProducts();
+        }
+
+
+
+        private void FilterProducts()
+        {
+            //filter in function of the user role
+
+            if (_showAllProducts)
             {
-                LoadProductsCommand.Execute(null);
+                FilteredProducts = new ObservableCollection<ProductDto>(AvailableProducts);
+
+            }
+            else
+            {
+                //filter in function of the user role
+                //foreach role add the products that the user can see into a collection using the PermissionService
+                FilteredProducts = new ObservableCollection<ProductDto>();
+
+                foreach (ProductDto product in AvailableProducts)
+                {
+                    if (PermissionService.HasPermission(_currentUser, (Stages)product.Curentstage.Id))
+                    {
+                        FilteredProducts.Add(product);
+                    }
+                }
+
+            }
+
+            //search bar filter
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+
                 return;
             }
 
-            var filteredList = AvailableProducts.Where(p =>
-                p.Name.ToString().Contains(value, StringComparison.OrdinalIgnoreCase) ||
-                p.Description?.ToLower().Contains(value.ToLower()) == true);
+            var searchTerm = SearchText.ToLower();
+            var filtered = FilteredProducts.Where(p =>
+                (p.Name?.ToLower().Contains(searchTerm) ?? false) ||
+                (p.Description?.ToLower().Contains(searchTerm) ?? false)).ToList();
 
-            AvailableProducts = new ObservableCollection<ProductDto>(filteredList);
+            FilteredProducts = new ObservableCollection<ProductDto>(filtered);
         }
 
+        [RelayCommand]
+        private void ShowAll()
+        {
+            _showAllProducts = !_showAllProducts;
+            FilterProducts();
+            if (_showAllProducts)
+            {
+                ShowAllProductsText = "Show my products";
+            }
+            else
+            {
+                ShowAllProductsText = "Show all products";
+            }
+        }
 
         [RelayCommand]
         private async Task LoadProducts()
@@ -95,6 +155,7 @@ namespace WPF_UI.ViewModels
                     !ProductsForReport.Any(rp => rp.Id == p.Id)).ToList();
 
                 AvailableProducts = new ObservableCollection<ProductDto>(availableProductsList);
+                FilterProducts();
             }
             catch (Exception ex)
             {
@@ -264,7 +325,7 @@ namespace WPF_UI.ViewModels
             try
             {
                 // temporary view model to render the charts
-                var tempViewModel = new ProductDetailsViewModel(_serviceFactory, null, null);
+                var tempViewModel = new ProductDetailsViewModel(_serviceFactory, _authService, null);
 
                 tempViewModel.LoadProduct(product);
 

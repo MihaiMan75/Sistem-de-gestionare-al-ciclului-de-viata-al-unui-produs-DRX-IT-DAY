@@ -84,7 +84,7 @@ namespace BusinessLogic.Services
             await Validate(userDto);
             UserRoles userRoles = new UserRoles();
             userRoles.id_user = userDto.Id;
-            userDto.PasswordHashed = _passwordHasher.HashPassword(userDto.PasswordHashed);
+            //userDto.PasswordHashed = _passwordHasher.HashPassword(userDto.PasswordHashed); already hashed in the service
 
             //search for the roles that are not in the user roles and delete them
             var existingRolesIds = await _userRoleReposiotory.GetUserRolesAsync(userDto.Id);

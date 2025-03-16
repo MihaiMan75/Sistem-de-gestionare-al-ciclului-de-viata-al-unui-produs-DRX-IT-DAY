@@ -70,6 +70,14 @@ namespace WPF_UI.Services
                 _navigationStore.CurrentViewModel = CurrentViewModel;
                 PreviousViewModel = temp;
                 _navigationStore.PreviousViewModel = PreviousViewModel;
+                if(CurrentViewModel is UserDashboardViewModel)
+                {
+                    ((UserDashboardViewModel)CurrentViewModel).LoadProductsCommand.Execute(null);
+                }
+                else if(CurrentViewModel is ProductManagementViewModel)
+                {
+                    ((ProductManagementViewModel)CurrentViewModel).LoadProductsCommand.Execute(null);
+                }
             }
         }
     }

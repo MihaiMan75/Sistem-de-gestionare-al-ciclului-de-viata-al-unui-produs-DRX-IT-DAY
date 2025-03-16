@@ -56,8 +56,7 @@ namespace DataAccess.Repositories
                 string sql = $@"UPDATE {TableName}
                 SET 
                    id_user = @id_user,
-                   end_of_stage = @end_of_stage,
-                   start_of_stage = @start_of_stage
+                   end_of_stage = @end_of_stage
                 WHERE stage_id = @stage_id 
                 AND  product_id = @product_id";
 
@@ -65,7 +64,6 @@ namespace DataAccess.Repositories
                 {
                     entity.stage_id,
                     entity.product_id,
-                    entity.start_of_stage,
                     entity.id_user,
                     entity.end_of_stage
                 });

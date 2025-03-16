@@ -22,7 +22,7 @@
           
 
         </StackPanel>
-        <!-- Header with current stage and change stage button -->
+        <!-- Header -->
         <Grid Grid.Row="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -60,7 +60,7 @@
                         Command="{Binding ChangeStageCommand}"
                         Width="120"
                         Height="30"
-                        Visibility="{Binding StageUpButtonVisibility}"/>
+                        Visibility="{Binding StageUpButtonVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 
                 <Button Grid.Column="1"
                     Margin="0,10,0,0"
@@ -69,7 +69,7 @@
                     Command="{Binding CancelProductCommand}"
                     Width="120"
                     Height="30"
-                    Visibility="{Binding CancelButtonVisibility}"/>
+                    Visibility="{Binding CancelButtonVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
             
         </Grid>
@@ -172,9 +172,11 @@
 
             <TabItem Header="Stage History">
                 <StackPanel Orientation="Vertical">
+                    
                     <DataGrid ItemsSource="{Binding StageHistory}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
+                 MaxHeight="200"
                   Margin="10">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Stage" 
@@ -209,6 +211,7 @@
                     />
 
                 </StackPanel>
+                
             </TabItem>
         </TabControl>
     </Grid>

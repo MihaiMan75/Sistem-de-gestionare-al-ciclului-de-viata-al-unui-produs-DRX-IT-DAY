@@ -36,7 +36,6 @@ namespace WPF_UI.ViewModels
         [RelayCommand]
         public async Task Login()
         {
-            MessageBox.Show($"{Username} , {Password}");
             if (await _authService.Login(Username, Password))// Delete TRUE after Implemeting Proper Navigation
             {
                 //navigate to the next page

@@ -28,22 +28,30 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Expander Grid.Column="0" Header="Search Filters" IsExpanded="False" Margin="0,0,10,0">
-                <usercontrols:SearchFilters />
-            </Expander>
+            
 
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <TextBox Width="250" Margin="0,0,10,0" 
+            <Grid Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="{Binding ShowAllProductsText}"  Grid.Column="0" Margin="3"
+                        Command="{Binding ShowAllCommand}"
+                        Style="{StaticResource CustomButtonStyle}"
+                        Padding="10,5" />
+                <usercontrols:CostumTextBoxWithEraseButton Width="300"  Grid.Column="1" 
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          VerticalContentAlignment="Center"
                          Padding="5,3"
+                         PlaceHodler="Search products..."
                          ToolTip="Search products by name or description"/>
-                <Button Content="Add New Product" 
+                <Button Content="Add New Product"  Grid.Column="2" Margin="3"
                         Command="{Binding CreateNewProductCommand}"
                         Visibility="{Binding AllowedToManageProducts,Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource CustomButtonStyle}"
                         Padding="10,5" />
-            </StackPanel>
+            </Grid>
         </Grid>
 
         <!-- Products  Grid -->
@@ -132,6 +140,9 @@
                                     <Button Content="Edit" Command="{Binding DataContext.EditProductCommand,
                                              RelativeSource={RelativeSource AncestorType=Page}}"
                                              Style="{StaticResource CustomButtonStyle}"
+                                             Visibility="{Binding DataContext.AllowedToManageProducts, 
+                                                 RelativeSource={RelativeSource AncestorType=Page}, 
+                                                 Converter={StaticResource BooleanToVisibilityConverter}}"
                                              CommandParameter="{Binding}"
                                              Width="70"
                                              Height="25"

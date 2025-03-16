@@ -21,6 +21,8 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Windows.Controls;
+using WPF_UI.Services;
+using static BusinessLogic.Enums;
 
 namespace WPF_UI.ViewModels
 {
@@ -54,9 +56,6 @@ namespace WPF_UI.ViewModels
         private string _nextStage = "null";
 
         [ObservableProperty]
-        private Visibility _stageUpButtonVisibility = Visibility.Visible;
-
-        [ObservableProperty]
         private DateTime _endDate;
 
         [ObservableProperty]
@@ -77,6 +76,12 @@ namespace WPF_UI.ViewModels
         [ObservableProperty]
         private UserDto _currentUser;
 
+        [ObservableProperty]
+        private bool _cancelButtonVisibility =false;
+
+        [ObservableProperty]
+        private bool _stageUpButtonVisibility = true;
+
 
 
         private readonly IServiceFactory _serviceFactory;
@@ -93,7 +98,7 @@ namespace WPF_UI.ViewModels
             WeakReferenceMessenger.Default.Register<ProductSelectedMessage>(this);
             _navigationService = navigationService;
             CurrentUser = authService.CurrentUser;
-
+           
             SetupPieChart();
             SetupStageHistoryChart();
 
@@ -154,21 +159,58 @@ namespace WPF_UI.ViewModels
             }
         }
 
-        
+        private void IsCurrentUserAlowedToModifyStage()
+        {
+            StageUpButtonVisibility = false;
+            CancelButtonVisibility = false;
+            //check if the user is allowed to modify the stage
+            try
+            {
+                if (CurrentStage.Id < 7 && PermissionService.HasPermission(CurrentUser, (Stages)CurrentStage.Id))
+                {
+                    StageUpButtonVisibility = true;
+                }
+
+                if (CurrentStage.Id == 6 && PermissionService.HasPermission(CurrentUser, (Stages)CurrentStage.Id))
+                {
+                    CancelButtonVisibility = true;
+                }
+                else
+                {
+                    CancelButtonVisibility = false;
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "There was an error IsCurrentUserAlowedToModifyStage " + ex.Message , MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
         private async Task LoadNextStage()
         {
+            IsCurrentUserAlowedToModifyStage();
             if (stages.Count <= 0)
             {
                 await LoadStages();
             }
-
-            if (stages.Count <= CurrentStage.Id)
+            //if we are in standby stage we can go to the back to production
+            if (stages.Count > CurrentStage.Id)
             {
                 NextStage = CurrentStage.Name;
             }
             else
             {
-                NextStage = stages[CurrentStage.Id].Name; //Always goes one stage up
+                NextStage = "None";
+                return;
+            }
+
+            if(CurrentStage.Id == 6)
+            {
+                NextStage = stages[3].Name; // go back to production 4-th stage
+            }
+            else
+            {
+                NextStage = stages[CurrentStage.Id].Name; //This goes one stage up
             }
         }
 
@@ -193,15 +235,15 @@ namespace WPF_UI.ViewModels
                 StageDto stage;
                 var currentStageIndex = CurrentStage.Id;
 
-                if (currentStageIndex < stages.Count)
-                {
+                //if (currentStageIndex < stages.Count)
+                //{
                     stage = stages[currentStageIndex];
-                }
-                else
-                {
-                    StageUpButtonVisibility = Visibility.Collapsed;
-                    return;
-                }
+                //}
+                //else
+                //{
+                //    StageUpButtonVisibility = false;
+                //    return;
+                //}
 
                 if (EndDate < DateTime.Now)
                 {
@@ -216,7 +258,11 @@ namespace WPF_UI.ViewModels
                         CurrentStageHistory.GetDto(), CurrentProduct.Id);
                 }
 
-                // Create a new history entry
+                // Create a new history entry (if the stage is on stand-by then go back to production)
+                if(CurrentStage.Id == 6)
+                {
+                    stage = stages[3];
+                }
                 var newHistoryDto = new ProductStageHistoryDto
                 {
                     ProductStage = stage,
@@ -250,6 +296,64 @@ namespace WPF_UI.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
+        private void CancelProduct()
+        {
+            //check if the product stage is standby
+            if (CurrentStage.Id == 6)
+            {
+                //check permission
+                if (PermissionService.HasPermission(CurrentUser, (Stages)CurrentStage.Id))
+                {
+                    
+                    try
+                    {
+                       
+                            CurrentStageHistory.EndDate = DateTime.Now;
+                            _productStageHistoryService.UpdateProductStageHistoryAsync(CurrentStageHistory.GetDto(), CurrentProduct.Id);
+
+                        var newHistoryDto = new ProductStageHistoryDto
+                        {
+                            ProductStage = stages[6], //cancel stage
+                            StartDate = DateTime.Now,
+                            User = _authService.CurrentUser,
+                            EndDate = DateTime.Now
+                        };
+                        _productService.AddProductStageAsync(CurrentProduct, newHistoryDto);
+                        CurrentProduct.StageHistory.Add(newHistoryDto);
+
+                        // Update the UI collection by finding and updating the wrapped object
+                        var updatedStageHistory = StageHistory.FirstOrDefault(sh =>
+                            sh.ProductStage.Id == CurrentStage.Id);
+                        if (updatedStageHistory != null)
+                        {
+                            updatedStageHistory.EndDate = DateTime.Now;
+                        }
+
+                        // Add the new history item as a wrapped object
+                        StageHistory.Add(new ProductStageHistoryViewModel(newHistoryDto));
+                        CurrentProduct.Curentstage = stages[0];
+                        CurrentStage = stages[0];
+                        CurrentStageHistory = StageHistory.Last();
+                        LoadNextStage();
+                        SetupStageHistoryChart();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("You do not have the permission to cancel the product", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("You can only cancel products in standby stage", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -341,8 +445,8 @@ namespace WPF_UI.ViewModels
                     Name = "Stage Duration",
                     Fill = new SolidColorPaint(SKColors.RoyalBlue),
                     Stroke = null,
-                    MaxBarWidth = 45,
-                    DataLabelsSize = 18,
+                    MaxBarWidth = 30,
+                    DataLabelsSize = 8,
                     DataLabelsPaint = new SolidColorPaint(SKColors.Black),
                     DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
                     DataLabelsFormatter = point => durationLabels[point.Index]
@@ -359,7 +463,7 @@ namespace WPF_UI.ViewModels
                 {
                     Labels = sortedHistory.Select(sh => sh.ProductStage.Name).ToArray(),
                     LabelsRotation = 45,
-                    TextSize = 12
+                    TextSize = 8
                 };
 
                 // Create a Y Axis
@@ -367,7 +471,7 @@ namespace WPF_UI.ViewModels
                 {
                     Name = "Duration",
                     NamePaint = new SolidColorPaint(SKColors.Gray),
-                    TextSize = 12,
+                    TextSize = 8,
                     Labeler = value =>
                     {
                         int days = (int)value;

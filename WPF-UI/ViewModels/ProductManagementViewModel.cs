@@ -25,6 +25,7 @@ namespace WPF_UI.ViewModels
         private readonly IBomService _bomService;
         private readonly IAuthService _authService;
         private readonly INavigationService _navigationService;
+        private readonly IStageService _stageSerivce;
 
         private BomDto _recivedBOM;
 
@@ -67,6 +68,7 @@ namespace WPF_UI.ViewModels
             _bomService = _serviceFactory.GetBomService();
             _authService = authService;
             _products = new ObservableCollection<ProductDto>();
+            _stageSerivce = _serviceFactory.GetStageService();
             //_bOMs = new ObservableCollection<BomDto>();
             WeakReferenceMessenger.Default.Register<BomSelectedMessage>(this);
             WeakReferenceMessenger.Default.Register<ProductSelectedMessage>(this);
@@ -147,6 +149,7 @@ namespace WPF_UI.ViewModels
                    existingProduct.StageHistory.Where(x => x.ProductStage.Id == CurrentProduct.Curentstage.Id).FirstOrDefault().EndDate = EndDate;
 
                     await _productService.UpdateProductAsync(existingProduct);
+                    MessageBox.Show("Product updated successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {   //for stage history we need to add the first stage somehow with the current user
@@ -163,12 +166,7 @@ namespace WPF_UI.ViewModels
                     List<ProductStageHistoryDto> stageHistory = new List<ProductStageHistoryDto>();
                     stageHistory.Add(new ProductStageHistoryDto
                     {
-                        ProductStage = new StageDto
-                        {
-                            Id = (int)Enums.Stage.Design,
-                            Name = Enums.Stage.Design.ToString(),
-                            Description = "Design stage"
-                        },
+                        ProductStage= await _stageSerivce.GetStageByIdAsync(1),
                         StartDate = DateTime.Now,
                         EndDate = EndDate,
                         User = _authService.CurrentUser
@@ -182,6 +180,7 @@ namespace WPF_UI.ViewModels
 
                 await LoadProducts();
                 ResetForm();
+                MessageBox.Show("Product saved successfully", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

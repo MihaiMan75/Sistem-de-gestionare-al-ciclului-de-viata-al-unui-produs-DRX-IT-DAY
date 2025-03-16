@@ -27,8 +27,11 @@
 
         <!-- Left side - Available Products List -->
         <GroupBox Header="Available Products" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
+           
+           
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -36,11 +39,19 @@
                 <!-- Search Box -->
                 <usercontrols:CostumTextBoxWithEraseButton Grid.Row="0" Margin="5" Height="25" 
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         PlaceHodler="Search products..."/>
-
+                         PlaceHodler="Search products..."
+                         MinHeight="30"/>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+                    <Button Content="{Binding ShowAllProductsText}" Margin="3"
+                            Command="{Binding ShowAllCommand}"
+                            Style="{StaticResource CustomButtonStyle}"
+                            MinHeight="28" MinWidth="200"
+                            Padding="10,5" />
+                </StackPanel>
+                
                 <!-- Available Products DataGrid -->
-                <DataGrid Grid.Row="1" Margin="5" 
-                          ItemsSource="{Binding AvailableProducts}"
+                <DataGrid Grid.Row="2" Margin="5" 
+                          ItemsSource="{Binding  FilteredProducts}"
                           SelectedItem="{Binding SelectedAvailableProduct}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True">

@@ -8,20 +8,26 @@ namespace BusinessLogic
 {
     public static class Enums
     {
-        //Maybe populate them from the db
-        public enum Stage
-        {
-            Design = 1,
-            Prototype = 2,
-            Production = 3,
-            Testing = 4,
-            Completed = 5
-        };
+        //Hardcoded values for the stages,roles and units of measure
+            public enum Stages
+            {
+                Concept = 1,
+                Fezabilitate = 2,
+                Proiectare = 3,
+                Productie = 4,
+                Retragere = 5,
+                StandBy = 6,
+                Cancel = 7
+            };
 
         public enum Roles
         {
-            Admin = 1,
-            User = 2
+            Creator_Concept =1,
+            Engineer = 2,
+            Designer = 3,
+            Production_Manager = 4,
+            Portfolio_Manager = 5,
+            Admin = 6
         };
 
         public enum UCUM

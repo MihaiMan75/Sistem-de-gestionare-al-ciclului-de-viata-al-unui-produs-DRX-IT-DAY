@@ -105,8 +105,7 @@ namespace WPF_UI.ViewModels
         }
 
 
-        /////////////////
-        ///  
+
         [RelayCommand]
         private async Task Save()
         {
