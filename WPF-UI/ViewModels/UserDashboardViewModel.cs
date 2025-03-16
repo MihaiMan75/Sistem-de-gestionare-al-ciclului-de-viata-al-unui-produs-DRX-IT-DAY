@@ -124,8 +124,8 @@ namespace WPF_UI.ViewModels
         private void FilterProducts()
         {
             //filter in function of the user role
-
-           if(_showAllProducts)
+            FilteredProducts = new ObservableCollection<ProductDtoWithProgress>();
+           if (_showAllProducts)
             {
                 FilteredProducts = new ObservableCollection<ProductDtoWithProgress>(Products);
         
@@ -135,6 +135,8 @@ namespace WPF_UI.ViewModels
                 //filter in function of the user role
                 //foreach role add the products that the user can see into a collection using the PermissionService
                 FilteredProducts = new ObservableCollection<ProductDtoWithProgress>();
+
+                if (Products.Count == 0) return;
 
                     foreach (ProductDtoWithProgress product in Products)
                     {
