@@ -21,7 +21,7 @@ namespace ProductManagementBusinessLogic.AuthUtils
             }
             catch (BCrypt.Net.SaltParseException ex)
             {
-                // Log the exception or handle it as needed
+                
                 Console.WriteLine($"SaltParseException: {ex.Message}");
                 return false;
             }
