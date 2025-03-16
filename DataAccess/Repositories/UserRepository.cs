@@ -47,7 +47,7 @@ namespace DataAccess.Repositories
                 }
                 catch (SqlException ex) when (ex.Number == 2627) // Error code for UNIQUE constraint violation
                 {
-                   
+
                     return -1;
                 }
             }
@@ -136,12 +136,24 @@ namespace DataAccess.Repositories
         {
             using (var connection = _context.CreateConnection())
             {
-                return  await connection.QuerySingleOrDefaultAsync<User>(
+                return await connection.QuerySingleOrDefaultAsync<User>(
                     $"SELECT * FROM {TableName} WHERE name = @name",
                     new { name }
                 );
             }
         }
 
+        public async Task<bool> HasUserRelationsAsync(int id_user)
+        {
+            using (var connection = _context.CreateConnection())
+            {
+                string sql = @"
+        SELECT CASE WHEN EXISTS (
+            SELECT 1 FROM product_stage_history WHERE id_user = @id_user
+        ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END";
+
+                return await connection.QueryFirstOrDefaultAsync<bool>(sql, new { id_user = id_user });
+            }
+        }
     }
 }

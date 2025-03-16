@@ -23,6 +23,7 @@ namespace WPF_UI.ViewModels
         private readonly IPasswordHasher PasswordHasher = new PasswordHasher();
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly IAuthService _authService;
 
         [ObservableProperty]
         private ObservableCollection<UserDto> _users;
@@ -45,6 +46,7 @@ namespace WPF_UI.ViewModels
             _serviceFactory = serviceFactory;
             _userService = _serviceFactory.GetUserService();
             _roleService = _serviceFactory.GetRoleService();
+            _authService = authService;
             CurrentUser = new UserDto();
             LoadUsersCommand.Execute(null);
             LoadRolesCommand.Execute(null);
@@ -189,14 +191,25 @@ namespace WPF_UI.ViewModels
                 {
                     return;
                 }
-
+                // if the user is the current user don't delete
+                if (user.Id == _authService.CurrentUser.Id)
+                {
+                    MessageBox.Show("Can't delete the current user", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                //if user has any product stages don't delte them.
+                if ( await _userService.HasUserRelationsAsync(user.Id))
+                {
+                    MessageBox.Show("User has product stages, can't delete", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 await _userService.DeleteUserAsync(user.Id);
                 await LoadUsers();
             }
             catch (Exception ex)
             {
-                // Handle error - could show message to user
-                System.Diagnostics.Debug.WriteLine($"Error deleting material: {ex.Message}");
+                MessageBox.Show("Error deleting user", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
             }
         }
 

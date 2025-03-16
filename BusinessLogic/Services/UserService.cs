@@ -153,5 +153,10 @@ namespace BusinessLogic.Services
            
           
         }
+
+        public async Task<bool> HasUserRelationsAsync(int userId)
+        {
+            return await _userRepository.HasUserRelationsAsync(userId);
+        }
     }
 }
