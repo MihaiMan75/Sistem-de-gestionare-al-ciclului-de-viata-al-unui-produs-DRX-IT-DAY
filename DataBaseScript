@@ -1,0 +1,308 @@
+USE [master]
+GO
+/****** Object:  Database [DRXItDay]    Script Date: 3/16/2025 12:58:29 PM ******/
+CREATE DATABASE [DRXItDay]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'DRXItDay', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\DRXItDay.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'DRXItDay_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\DRXItDay_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [DRXItDay] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [DRXItDay].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [DRXItDay] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [DRXItDay] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [DRXItDay] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [DRXItDay] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [DRXItDay] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [DRXItDay] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [DRXItDay] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [DRXItDay] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [DRXItDay] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [DRXItDay] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [DRXItDay] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [DRXItDay] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [DRXItDay] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [DRXItDay] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [DRXItDay] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [DRXItDay] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [DRXItDay] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [DRXItDay] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [DRXItDay] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [DRXItDay] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [DRXItDay] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [DRXItDay] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [DRXItDay] SET RECOVERY FULL 
+GO
+ALTER DATABASE [DRXItDay] SET  MULTI_USER 
+GO
+ALTER DATABASE [DRXItDay] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [DRXItDay] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [DRXItDay] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [DRXItDay] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [DRXItDay] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [DRXItDay] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'DRXItDay', N'ON'
+GO
+ALTER DATABASE [DRXItDay] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [DRXItDay] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [DRXItDay]
+GO
+/****** Object:  Table [dbo].[bom]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[bom](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[bom_materials]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[bom_materials](
+	[material_number] [int] NOT NULL,
+	[bom_id] [int] NOT NULL,
+	[qty] [decimal](10, 2) NOT NULL,
+	[unit_measure_code] [varchar](20) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[bom_id] ASC,
+	[material_number] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[materials]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[materials](
+	[material_number] [int] IDENTITY(1,1) NOT NULL,
+	[material_description] [varchar](225) NOT NULL,
+	[weight] [decimal](10, 2) NOT NULL,
+	[width] [decimal](10, 2) NOT NULL,
+	[height] [decimal](10, 2) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[material_number] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[product_stage_history]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[product_stage_history](
+	[stage_id] [int] NOT NULL,
+	[product_id] [int] NOT NULL,
+	[start_of_stage] [datetime] NOT NULL,
+	[end_of_stage] [datetime] NULL,
+	[id_user] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[stage_id] ASC,
+	[product_id] ASC,
+	[start_of_stage] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[products]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[products](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[bom_id] [int] NOT NULL,
+	[description] [varchar](max) NOT NULL,
+	[estimated_height] [decimal](10, 2) NOT NULL,
+	[estimated_width] [decimal](10, 2) NOT NULL,
+	[estimated_weight] [decimal](10, 2) NOT NULL,
+	[name] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[roles]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[roles](
+	[id] [int] NOT NULL,
+	[role_name] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[stages]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[stages](
+	[id] [int] NOT NULL,
+	[name] [varchar](80) NOT NULL,
+	[description] [varchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[user_roles]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[user_roles](
+	[id_user] [int] NOT NULL,
+	[role_id] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_user] ASC,
+	[role_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[users]    Script Date: 3/16/2025 12:58:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[users](
+	[id_user] [int] IDENTITY(1,1) NOT NULL,
+	[email] [varchar](255) NOT NULL,
+	[name] [varchar](255) NOT NULL,
+	[PasswordHashed] [nvarchar](100) NOT NULL,
+	[phone_number] [varchar](20) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_user] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[product_stage_history] ADD  DEFAULT (getdate()) FOR [start_of_stage]
+GO
+ALTER TABLE [dbo].[bom_materials]  WITH CHECK ADD  CONSTRAINT [FK_bom_materials_bom] FOREIGN KEY([bom_id])
+REFERENCES [dbo].[bom] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[bom_materials] CHECK CONSTRAINT [FK_bom_materials_bom]
+GO
+ALTER TABLE [dbo].[bom_materials]  WITH CHECK ADD  CONSTRAINT [FK_bom_materials_materials] FOREIGN KEY([material_number])
+REFERENCES [dbo].[materials] ([material_number])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[bom_materials] CHECK CONSTRAINT [FK_bom_materials_materials]
+GO
+ALTER TABLE [dbo].[product_stage_history] CHECK CONSTRAINT [FK_product_stage_history_stages]
+GO
+ALTER TABLE [dbo].[product_stage_history]  WITH CHECK ADD  CONSTRAINT [FK_product_stage_history_users] FOREIGN KEY([id_user])
+REFERENCES [dbo].[users] ([id_user])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[product_stage_history] CHECK CONSTRAINT [FK_product_stage_history_users]
+GO
+ALTER TABLE [dbo].[products]  WITH CHECK ADD  CONSTRAINT [FK_products_bom] FOREIGN KEY([bom_id])
+REFERENCES [dbo].[bom] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[products] CHECK CONSTRAINT [FK_products_bom]
+GO
+ALTER TABLE [dbo].[user_roles]  WITH CHECK ADD  CONSTRAINT [FK_user_roles_roles] FOREIGN KEY([role_id])
+REFERENCES [dbo].[roles] ([id])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[user_roles] CHECK CONSTRAINT [FK_user_roles_roles]
+GO
+ALTER TABLE [dbo].[user_roles]  WITH CHECK ADD  CONSTRAINT [FK_user_roles_users] FOREIGN KEY([id_user])
+REFERENCES [dbo].[users] ([id_user])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[user_roles] CHECK CONSTRAINT [FK_user_roles_users]
+GO
+USE [master]
+GO
+ALTER DATABASE [DRXItDay] SET  READ_WRITE 
+GO
+USE DRXItDay
+
+-- Adaugarea Rolurilor 
+INSERT INTO roles (id, role_name) VALUES 
+(1, 'Creator Concept'),
+(2, 'Engineer'),
+(3,'Designer'),
+(4, 'Production Manager'),
+(5, 'Portfolio Manager'),
+(6, 'Admin' );
+GO
+-- Adaugarea Stges
+INSERT INTO dbo.stages (id, name, description) VALUES
+(1, 'Concept', 'Faza de generare a ideilor si stabilirea viziunii pentru un nou produs.'),
+(2, 'Fezabilitate', 'Analiza viabilitatii tehnice, economice si comerciale a produsului propus.'),
+(3, 'Proiectare', 'Crearea detaliilor tehnice si a specificatiilor pentru dezvoltarea produsului.'),
+(4, 'Productie', 'Fabricatia efectiva a produsului conform specificatiilor stabilite.'),
+(5, 'Retragere', 'Scoaterea treptata a produsului de pe piata la finalul ciclului sau de viata.'),
+(6, 'Stand by', 'Suspendarea temporara a produsului fara retragere definitiva.'),
+(7, 'Cancel', 'Anularea completa a dezvoltarii sau fabricarii produsului.');
+GO
